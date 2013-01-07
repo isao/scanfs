@@ -11,33 +11,28 @@ function Scan() {
 function relative(f) {
     var self = this;
 
-    function onStat(err, stat) {
-        var type;
-        if (err) {
-            type = 'error';
-
-        } else if (stat.isFile()) {
-            type = 'file';
-
-        } else if (stat.isDirectory()) {
-            type = 'directory';
-            fs.readdir(f, function onReaddir(err, files) {
-                if (err) {
-                    self.emit('error', err);
-                }
-                (files || []).forEach(function per(file) {
-                    self.relative(path.join(f, file));
-                });
-            });
-
-        } else {
-            type = 'other';
-        }
-
-        this.emit(type, {file: f, type: type, stat: stat, error: err});
+    function recurse(file) {
+        self.relative(path.join(f, file));
     }
 
-    fs.stat(f, onStat.bind(self));
+    function perdir(err, files) {
+        return err ? self.emit('error', err) : files.forEach(recurse);
+    }
+
+    function onStat(err, stat) {
+        var type = 'other';
+        if (err) {
+            type = 'error';
+        } else if (stat.isFile()) {
+            type = 'file';
+        } else if (stat.isDirectory()) {
+            type = 'directory';
+            fs.readdir(f, perdir);
+        }
+        self.emit(type, {file: f, type: type, stat: stat, error: err});
+    }
+
+    fs.stat(f, onStat);
 }
 
 function absolute(f) {
