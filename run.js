@@ -17,7 +17,7 @@ scan.on('other',       toLog('warn'));
 scan.on('error',       toLog('error'));
 
 if (!args.length) {
-	args.push(process.cwd());
+	args.push('.');
 }
 
 args.forEach(function (arg) {
