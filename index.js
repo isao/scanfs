@@ -1,14 +1,21 @@
-/*jslint sloppy:true node:true */
+/*jslint node:true */
+'use strict';
 
 var fs = require('fs'),
     path = require('path'),
     Stream = require('stream');
 
 
-function Scan() {
-}
+//todo:
+//- callback
+//- file/type exclusion
+//- make event type categorization user configurable/parameterized
 
-function relative(f) {
+function Scan() {}
+
+Scan.prototype = Object.create(Stream.prototype);
+
+Scan.prototype.relative = function (f) {
     var self = this;
 
     function recurse(file) {
@@ -19,7 +26,7 @@ function relative(f) {
         return err ? self.emit('error', err) : files.forEach(recurse);
     }
 
-    function onStat(err, stat) {
+    function statCb(err, stat) {
         var type = 'other';
         if (err) {
             type = 'error';
@@ -32,15 +39,11 @@ function relative(f) {
         self.emit(type, {file: f, type: type, stat: stat, error: err});
     }
 
-    fs.stat(f, onStat);
-}
+    fs.stat(f, statCb);
+};
 
-function absolute(f) {
-    return relative(path.resolve(f));
-}
-
-Scan.prototype = Object.create(Stream.prototype);
-Scan.prototype.relative = relative;
-Scan.prototype.absolute = absolute;
+Scan.prototype.absolute = function (f) {
+    return this.relative(path.resolve(f));
+};
 
 module.exports = Scan;
