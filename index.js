@@ -1,9 +1,7 @@
-#!/usr/bin/env node
-'use strict';
+/*jslint sloppy:true node:true */
 
 var fs = require('fs'),
     path = require('path'),
-    Event = require('events').EventEmitter,
     Stream = require('stream');
 
 
@@ -24,6 +22,9 @@ function relative(f) {
         } else if (stat.isDirectory()) {
             type = 'directory';
             fs.readdir(f, function onReaddir(err, files) {
+                if (err) {
+                    self.emit('error', err);
+                }
                 (files || []).forEach(function per(file) {
                     self.relative(path.join(f, file));
                 });
@@ -43,7 +44,7 @@ function absolute(f) {
     return relative(path.resolve(f));
 }
 
-Scan.prototype = Object.create(Event.prototype);
+Scan.prototype = Object.create(Stream.prototype);
 Scan.prototype.relative = relative;
 Scan.prototype.absolute = absolute;
 
