@@ -1,16 +1,16 @@
 {
-  "name": "fscan",
-  "version": "0.0.0",
-  "description": "scan files",
-  "main": "index.js",
-  "dependencies": {
-    "graceful-fs": "~1.1.14"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": "",
-  "author": "",
-  "license": "MIT"
+    "name": "scanfs",
+    "version": "0.0.0",
+    "description": "Recursively walk the filesystem, emitting events on the way",
+    "main": "index.js",
+    "dependencies": {},
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo 'no tests' && exit 1"
+    },
+    "repository": "",
+    "author": "Isao Yagi",
+    "license": "MIT",
+    "gitHead": "5b71ccafd5891101ff32dee15b05809c75ccfefd",
+    "keywords": ["filesystem", "walk", "find", "traverse"]
 }
