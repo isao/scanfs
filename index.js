@@ -1,15 +1,20 @@
 #!/usr/bin/env node
 'use strict';
 
-var fs = require('graceful-fs'),
+var fs = require('fs'),
     path = require('path'),
-    Event = require('events').EventEmitter;
+    Event = require('events').EventEmitter,
+    Stream = require('stream');
 
 
-function fscan(f, ee) {
+function Scan() {
+}
+
+function relative(f) {
+    var self = this;
+
     function onStat(err, stat) {
         var type;
-
         if (err) {
             type = 'error';
 
@@ -20,7 +25,7 @@ function fscan(f, ee) {
             type = 'directory';
             fs.readdir(f, function onReaddir(err, files) {
                 (files || []).forEach(function per(file) {
-                    fscan(path.join(f, file), ee);
+                    self.relative(path.join(f, file));
                 });
             });
 
@@ -28,18 +33,18 @@ function fscan(f, ee) {
             type = 'other';
         }
 
-        ee.emit(type, {file: f, type: type, stat: stat, error: err});
+        this.emit(type, {file: f, type: type, stat: stat, error: err});
     }
 
-    fs.stat(f, onStat);
+    fs.stat(f, onStat.bind(self));
 }
 
-module.exports = fscan;
+function absolute(f) {
+    return relative(path.resolve(f));
+}
 
-module.exports.fullpaths = function (f, ee) {
-    fscan(path.resolve(f), ee);
-};
+Scan.prototype = Object.create(Event.prototype);
+Scan.prototype.relative = relative;
+Scan.prototype.absolute = absolute;
 
-module.exports.newEvent = function () {
-    return new Event();
-};
+module.exports = Scan;

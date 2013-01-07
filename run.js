@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-var fscan = require('./'),
-    event = fscan.newEvent(),
+var scan = new (require('./'))(),
     args = process.argv.slice(2);
 
 
@@ -12,15 +11,15 @@ function toLog(prefix, level) {
 	}
 }
 
-event.on('directory',   toLog());
-event.on('file',        toLog());
-event.on('other',       toLog('warn'));
-event.on('error',       toLog('error'));
+scan.on('directory',   toLog());
+scan.on('file',        toLog());
+scan.on('other',       toLog('warn'));
+scan.on('error',       toLog('error'));
 
 if (!args.length) {
 	args.push(process.cwd());
 }
 
 args.forEach(function (arg) {
-	fscan(arg, event);
+	scan.relative(arg);
 });
