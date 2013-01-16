@@ -9,8 +9,4 @@ scan.on('**', function(meta) {
     console.log(meta.type, '\t', meta.pathname);
 });
 
-if (!args.length) {
-    args.push('.');
-}
-
-scan.relatively(args);
+scan.relatively(args.length ? args : ['.']);
