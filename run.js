@@ -1,25 +1,16 @@
 #!/usr/bin/env node
 'use strict';
 
-var scan = new (require('./'))(),
+var Scan = require('./'),
+    scan = new Scan(),
     args = process.argv.slice(2);
 
-
-function toLog(prefix, level) {
-	return function (filemeta) {
-		console[level || 'log'](filemeta.file + (filemeta.type === 'directory' ? '/' :''));
-	}
-}
-
-scan.on('directory',   toLog());
-scan.on('file',        toLog());
-scan.on('other',       toLog('warn'));
-scan.on('error',       toLog('error'));
+scan.on('*', function(meta) {
+    console.log(meta.type, '\t', meta.filepath);
+});
 
 if (!args.length) {
-	args.push('.');
+    args.push('.');
 }
 
-args.forEach(function (arg) {
-	scan.relative(arg);
-});
+scan.relatively(args);
