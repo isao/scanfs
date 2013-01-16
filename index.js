@@ -50,7 +50,11 @@ function getStatCb(item, list, self) {
          * @param {array} sublist File names contained in current item
          */
         function recurse(err, sublist) {
-            self.relatively(list.concat(sublist.map(pathing)));
+            if (err) {
+                self.emit('error', {type: 'error', error: err});
+            } else {
+                self.relatively(list.concat(sublist.map(pathing)));
+            }
         }
 
         if ('dir' === type) {
