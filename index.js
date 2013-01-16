@@ -11,7 +11,8 @@ var fs = require('fs'),
  * @param {string} item Pathname
  * @return {string} Type of filesystem item and name of event emitted
  */
-function typer(err, stat, item) {
+function typer(err, stat) {
+    'use strict';
     var type = 'other';
     if (err) {
         type = 'error';
@@ -29,8 +30,9 @@ function typer(err, stat, item) {
  * @param {object} self This instance object.
  */
 function getStatCb(item, list, self) {
+    'use strict';
     return function statCb(err, stat) {
-        var type = self.typeset(err, stat, item) || typer(err, stat, item);
+        var type = self.typeset(err, stat, item) || typer(err, stat);
 
         //self.emit(type, {type: type, filepath: item, stat: stat, error: err});
         self.emit('*', {type: type, filepath: item, stat: stat, error: err});
@@ -39,7 +41,7 @@ function getStatCb(item, list, self) {
          * @param {string} subitem File name from fs.readdir().
          * @return {string} Filesystem path of subitem.
          */
-        function getPath(subitem) {
+        function pathing(subitem) {
             return path.join(item, subitem);
         }
 
@@ -48,7 +50,7 @@ function getStatCb(item, list, self) {
          * @param {array} sublist File names contained in current item
          */
         function recurse(err, sublist) {
-            self.relatively(list.concat(sublist.map(getPath)));
+            self.relatively(list.concat(sublist.map(pathing)));
         }
 
         if ('dir' === type) {
@@ -56,7 +58,7 @@ function getStatCb(item, list, self) {
         } else if (list.length) {
             self.relatively(list);
         } else {
-            self.emit('*', {type:'done', filepath: self.count});
+            self.emit('*', {type: 'done', filepath: self.count});
         }
     };
 }
@@ -67,7 +69,7 @@ function getStatCb(item, list, self) {
  * truthy value, the default typer will be used.
  */
 function typeSetter(fn) {
-    this.typeset = 'function' === typeof fn ? fn : function() {};
+    this.typeset = 'function' === typeof fn ? fn : function () {};
 }
 
 /**
