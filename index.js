@@ -19,22 +19,23 @@ function typer(err, stat) {
 
 function getStatCb(item, list, self) {
     return function statCb(err, stat) {
+
         var type = typer(err, stat);
 
-        self.emit(type, {type: type, filepath: item, stat: stat, error: err});
+        //self.emit(type, {type: type, filepath: item, stat: stat, error: err});
         self.emit('*', {type: type, filepath: item, stat: stat, error: err});
 
         if ('dir' === type) {
-            /*jslint stupid:true */
-            fs.readdirSync(item).forEach(function (diritem) {
-                list.push(item + '/' + diritem);
+            fs.readdir(item, function (err, sublist) {
+                sublist.forEach(function (subitem) {
+                    list.push(path.join(item, subitem));
+                });
+                self.relatively(list);
             });
-        }
-
-        if (list.length) {
+        } else if (list.length) {
             self.relatively(list);
         } else {
-            self.emit('done', self.count);
+            self.emit('*', {type:'done', filepath: self.count});
         }
     };
 }
@@ -47,8 +48,8 @@ function relatively(list) {
     }
 }
 
-function absolutely(f) {
-    return this.relative(path.resolve(f));
+function absolutely(list) {
+    return this.relative(list.map(path.resolve));
 }
 
 function Scan() {
