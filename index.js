@@ -69,7 +69,14 @@ function getStatCb(item, list, self) {
  * truthy value, the default typer will be used.
  */
 function typeSetter(fn) {
-    this.typeset = 'function' === typeof fn ? fn : function () {};
+    if ('function' === typeof fn) {
+        this.typeset = (function () {
+            'use strict';
+            return fn;
+        }());
+    } else {
+        this.typeset = function () {};
+    }
 }
 
 /**
