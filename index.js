@@ -34,8 +34,8 @@ function getStatCb(item, list, self) {
     return function statCb(err, stat) {
         var type = self.typeset(err, stat, item) || typer(err, stat);
 
-        //self.emit(type, {type: type, filepath: item, stat: stat, error: err});
-        self.emit('*', {type: type, filepath: item, stat: stat, error: err});
+        //self.emit(type, {type: type, pathname: item, stat: stat, error: err});
+        self.emit('*', {type: type, pathname: item, stat: stat, error: err});
 
         /**
          * @param {string} subitem File name from fs.readdir().
@@ -62,7 +62,7 @@ function getStatCb(item, list, self) {
         } else if (list.length) {
             self.relatively(list);
         } else {
-            self.emit('*', {type: 'done', filepath: self.count});
+            self.emit('*', {type: 'done', pathname: self.count});
         }
     };
 }

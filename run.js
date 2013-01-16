@@ -6,7 +6,7 @@ var Scan = require('./'),
     args = process.argv.slice(2);
 
 scan.on('*', function(meta) {
-    console.log(meta.type, '\t', meta.filepath);
+    console.log(meta.type, '\t', meta.pathname);
 });
 
 if (!args.length) {
