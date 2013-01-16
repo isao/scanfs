@@ -34,8 +34,8 @@ function getStatCb(item, list, self) {
     return function statCb(err, stat) {
         var type = self.typeset(err, stat, item) || typer(err, stat);
 
-        //self.emit(type, {type: type, pathname: item, stat: stat, error: err});
-        self.emit('*', {type: type, pathname: item, stat: stat, error: err});
+        self.emit(type, {type: type, pathname: item, stat: stat, error: err});
+        self.emit('**', {type: type, pathname: item, stat: stat, error: err});
 
         /**
          * @param {string} subitem File name from fs.readdir().
