@@ -64,7 +64,7 @@ function getStatCb(item, list, self) {
         } else if (list.length) {
             self.relatively(list);
         } else {
-            self.emit('*', {type: 'done', pathname: self.count});
+            self.emit('done', self.count);
         }
     };
 }
