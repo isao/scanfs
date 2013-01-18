@@ -32,7 +32,7 @@ function typer(err, stat) {
 function getStatCb(item, list, self) {
     'use strict';
     return function statCb(err, stat) {
-        var type = self.typeset(err, stat, item) || typer(err, stat);
+        var type = self.typeSetter(err, stat, item) || typer(err, stat);
 
         self.emit(type, {type: type, pathname: item, stat: stat, error: err});
         self.emit('**', {type: type, pathname: item, stat: stat, error: err});
@@ -68,19 +68,14 @@ function getStatCb(item, list, self) {
 }
 
 /**
- * @param {function} fn Function to allow custom event categories/types. The
- * function will be passed err, stat, and pathname. If fn doesn't return a
- * truthy value, the default typer will be used.
+ * @param {object} err fs.stat() Error object, or null
+ * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
+ * @param {string} item Pathname
+ * @return {string} Name of event/type. If falsey, typer() will be used.
  */
-function typeSetter(fn) {
-    if ('function' === typeof fn) {
-        this.typeset = (function () {
-            'use strict';
-            return fn;
-        }());
-    } else {
-        this.typeset = function () {};
-    }
+/*jslint unparam: true*/
+function typeSetter(err, stat, pathname) {
+    // stub for user-provided event category typer
 }
 
 /**
@@ -103,9 +98,15 @@ function absolutely(list) {
     return this.relatively(list.map(path.resolve));
 }
 
-function Scan() {
+/**
+ * @constructor
+ * @param {function} fn Function to allow custom event categories/types.
+ */
+function Scan(typeSetterFn) {
     this.count = 0;
-    this.typeSetter();
+    if ('function' === typeof typeSetterFn) {
+        this.typeSetter = typeSetterFn;
+    }
 }
 
 Scan.prototype = Object.create(Stream.prototype, {
