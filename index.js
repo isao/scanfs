@@ -64,7 +64,7 @@ function getStatCb(item, list, self) {
          */
         function recurse(err, sublist) {
             if (err) {
-                self.emit('error', {type: 'error', error: err});
+                self.emit('error', {pathname: item, error: err});
             } else {
                 self.relatively(list.concat(sublist.map(pathing)));
             }

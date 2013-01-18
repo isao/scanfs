@@ -7,6 +7,10 @@ var Scan = require('./'),
 
 scan.on('*', function(meta) {
     console.log(meta.type, '\t', meta.pathname);
+}).on('done', function(count) {
+	console.log('done. %d items.', count);
+}).on('error', function(err, pathname) {
+	console.error('uh oh. error %j for %s', err, pathname);
 });
 
 scan.relatively(args.length ? args : ['.']);
