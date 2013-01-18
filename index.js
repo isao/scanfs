@@ -43,32 +43,32 @@ function typeSetter(err, stat, pathname) {
  */
 function getStatCb(item, list, self) {
     'use strict';
+    /**
+     * @param {string} subitem File name from fs.readdir().
+     * @return {string} Filesystem path of subitem.
+     */
+    function pathing(subitem) {
+        return path.join(item, subitem);
+    }
+
+    /**
+     * Callback to add the new dir contents to the end of the stack.
+     * @param {object} err From fs.readdir() failure.
+     * @param {array} sublist File names contained in current item.
+     */
+    function recurse(err, sublist) {
+        if (err) {
+            self.emit('error', err, item);
+        } else {
+            self.relatively(list.concat(sublist.map(pathing)));
+        }
+    }
+
     return function statCb(err, stat) {
         var type = self.typeSetter(err, stat, item) || typer(err, stat);
 
         self.emit(type, {type: type, pathname: item, stat: stat});
         self.emit('*',  {type: type, pathname: item, stat: stat});
-
-        /**
-         * @param {string} subitem File name from fs.readdir().
-         * @return {string} Filesystem path of subitem.
-         */
-        function pathing(subitem) {
-            return path.join(item, subitem);
-        }
-
-        /**
-         * Callback to add the new dir contents to the end of the stack.
-         * @param {object} err From fs.readdir() failure.
-         * @param {array} sublist File names contained in current item.
-         */
-        function recurse(err, sublist) {
-            if (err) {
-                self.emit('error', {pathname: item, error: err});
-            } else {
-                self.relatively(list.concat(sublist.map(pathing)));
-            }
-        }
 
         if ('dir' === type) {
             fs.readdir(item, recurse);
