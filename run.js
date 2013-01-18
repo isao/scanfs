@@ -5,7 +5,7 @@ var Scan = require('./'),
     scan = new Scan(),
     args = process.argv.slice(2);
 
-scan.on('**', function(meta) {
+scan.on('*', function(meta) {
     console.log(meta.type, '\t', meta.pathname);
 });
 

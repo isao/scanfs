@@ -28,14 +28,15 @@ function typer(err, stat) {
  * @param {string} item File system path.
  * @param {array} list Items remaining to fs.stat().
  * @param {object} self This instance object.
+ * @return {function} Closure for fs.stat() callback.
  */
 function getStatCb(item, list, self) {
     'use strict';
     return function statCb(err, stat) {
         var type = self.typeSetter(err, stat, item) || typer(err, stat);
 
-        self.emit(type, {type: type, pathname: item, stat: stat, error: err});
-        self.emit('**', {type: type, pathname: item, stat: stat, error: err});
+        self.emit(type, {type: type, pathname: item, stat: stat});
+        self.emit('*',  {type: type, pathname: item, stat: stat});
 
         /**
          * @param {string} subitem File name from fs.readdir().
@@ -46,8 +47,9 @@ function getStatCb(item, list, self) {
         }
 
         /**
-         * @param {object} err
-         * @param {array} sublist File names contained in current item
+         * Callback to add the new dir contents to the end of the stack.
+         * @param {object} err From fs.readdir() failure.
+         * @param {array} sublist File names contained in current item.
          */
         function recurse(err, sublist) {
             if (err) {
