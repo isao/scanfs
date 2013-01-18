@@ -7,7 +7,7 @@ var fs = require('fs'),
 
 /**
  * @param {object} err fs.stat() Error object, or null
- * @param {object} stat fs.Stats object http://nodejs.org/docs/latest/api/fs.html#fs_class_fs_stats
+ * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
  * @param {string} item Pathname
  * @return {string} Type of filesystem item and name of event emitted
  */
@@ -22,6 +22,17 @@ function typer(err, stat) {
         type = 'dir';
     }
     return type;
+}
+
+/**
+ * @param {object} err fs.stat() Error object, or null
+ * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
+ * @param {string} item Pathname
+ * @return {string} Name of event/type. If falsey, typer() will be used.
+ */
+/*jslint unparam: true*/
+function typeSetter(err, stat, pathname) {
+    // stub for user-provided event category typer
 }
 
 /**
@@ -70,17 +81,6 @@ function getStatCb(item, list, self) {
 }
 
 /**
- * @param {object} err fs.stat() Error object, or null
- * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
- * @param {string} item Pathname
- * @return {string} Name of event/type. If falsey, typer() will be used.
- */
-/*jslint unparam: true*/
-function typeSetter(err, stat, pathname) {
-    // stub for user-provided event category typer
-}
-
-/**
  * @param {array} list Paths to begin walking. Events emitted for every item.
  * Pathnames emitted are relative to the pathnames in the list.
  */
@@ -97,7 +97,7 @@ function relatively(list) {
  * Pathnames emitted are absolute.
  */
 function absolutely(list) {
-    return this.relatively(list.map(path.resolve));
+    this.relatively(list.map(path.resolve));
 }
 
 /**
