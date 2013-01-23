@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+/**
+ * Copyright (c) 2012 Yahoo! Inc.  All rights reserved.
+ * Copyrights licensed under the MIT License.
+ * See the accompanying LICENSE file for terms.
+ */
+'use strict';
+
+var Scan = require('./'),
+    args = require('optimist').alias({'x': 'exclude'}).argv,
+    exclude = [].concat(args.exclude).map(regexify),
+    scan;
+
+
+function regexify(str) {
+    return ('/' === str[0]) && ('/' === str.slice(-1)) ?
+        new RegExp(str.slice(1,-1)) : str;
+}
+
+scan = new Scan(exclude);
+
+scan.on('file', function(meta) {
+    console.log(meta.type, '\t', meta.pathname);
+});
+
+scan.on('done', function(count) {
+	console.log('done. %d items.', count);
+});
+
+scan.on('error', function(err, pathname) {
+	console.error('uh oh. error %j for %s', err, pathname);
+});
+
+scan.relatively(args._);
