@@ -14,30 +14,17 @@ var fs = require('fs'),
  * @param {object} err fs.stat() Error object, or null
  * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
  * @param {string} item Pathname
- * @return {string} Type of filesystem item and name of event emitted
- */
-function typer(err, stat) {
-    'use strict';
-    var type = 'other';
-    if (err) {
-        type = 'error';
-    } else if (stat.isFile()) {
-        type = 'file';
-    } else if (stat.isDirectory()) {
-        type = 'dir';
-    }
-    return type;
-}
-
-/**
- * @param {object} err fs.stat() Error object, or null
- * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
- * @param {string} item Pathname
  * @return {string} Name of event/type. If falsey, typer() will be used.
  */
 /*jslint unparam: true*/
 function typeSetter(err, stat, pathname) {
     // stub for user-provided event category typer
+}
+
+function match(str) { // because str.match doesn't work as a bare callback
+	return function(re) {
+		return str.match(re);
+	}
 }
 
 /**
@@ -69,8 +56,28 @@ function getStatCb(item, list, self) {
         }
     }
 
+    /**
+     * @param {object} err fs.stat() Error object, or null
+     * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
+     * @param {string} item Pathname
+     * @return {string} Type of filesystem item and name of event emitted
+     */
+    function typer(err, stat, pathname) {
+        var type = 'other';
+        if (err) {
+            type = 'error';
+        } else if (self.ignore.length && self.ignore.some(match(pathname))) {
+            type = 'ignored';
+        } else if (stat.isFile()) {
+            type = 'file';
+        } else if (stat.isDirectory()) {
+            type = 'dir';
+        }
+        return type;
+    }
+
     return function statCb(err, stat) {
-        var type = self.typeSetter(err, stat, item) || typer(err, stat);
+        var type = self.typeSetter(err, stat, item) || typer(err, stat, item);
 
         self.emit(type, {type: type, pathname: item, stat: stat});
         self.emit('*',  {type: type, pathname: item, stat: stat});
@@ -107,13 +114,11 @@ function absolutely(list) {
 
 /**
  * @constructor
- * @param {function} fn Function to allow custom event categories/types.
+ * @param {mixed}
  */
-function Scan(typeSetterFn) {
+function Scan(/* strings, regexps, or arrays of such to ignore */) {
     this.count = 0;
-    if ('function' === typeof typeSetterFn) {
-        this.typeSetter = typeSetterFn;
-    }
+    this.ignore = arguments.length ? [].concat(arguments) : [];
 }
 
 Scan.prototype = Object.create(Stream.prototype, {
