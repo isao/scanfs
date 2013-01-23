@@ -114,11 +114,11 @@ function absolutely(list) {
 
 /**
  * @constructor
- * @param {mixed}
+ * @param {array} ignore Array of strings or regexes for exclusion matching
  */
-function Scan(/* strings, regexps, or arrays of such to ignore */) {
+function Scan(ignore) {
     this.count = 0;
-    this.ignore = arguments.length ? [].concat(arguments) : [];
+    this.ignore = ignore;
 }
 
 Scan.prototype = Object.create(Stream.prototype, {
