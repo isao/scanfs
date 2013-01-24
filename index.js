@@ -118,7 +118,7 @@ function absolutely(list) {
  */
 function Scan(ignore) {
     this.count = 0;
-    this.ignore = ignore;
+    this.ignore = ignore || [];
 }
 
 Scan.prototype = Object.create(Stream.prototype, {
