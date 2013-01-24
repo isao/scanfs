@@ -15,12 +15,12 @@ scan.typeSetter = function (err, stat, pathname) {
 };
 
 // listen for it
-scan.on('appconfig', function(meta) {
-    configs.push(meta.pathname);
+scan.on('appconfig', function (pathname, stat, type) {
+    configs.push(pathname);
 });
 
 // default event types include 'error', '*', 'file', 'dir', 'other', 'ignored'
-scan.on('file', function(meta) {
+scan.on('file', function (pathname, stat, type) {
     process.stdout.write('.');
 });
 
@@ -31,4 +31,4 @@ scan.on('done', function (count) {
 });
 
 // pass path(s) as command line arguments
-scan.relatively(process.argv.slice(2));
+scan.relatively(process.argv.slice(2) || '.');

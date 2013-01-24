@@ -13,15 +13,15 @@ var fs = require('fs'),
     scan = new Scan(ignore);
 
 
-scan.on('dir', function (meta) {
-    fs.mkdir(path.join(to, meta.pathname));
+scan.on('dir', function (pathname, stat, type) {
+    fs.mkdir(path.join(to, pathname));
 });
 
-scan.on('file', function(meta) {
-    var dest = to + meta.pathname;
-    if (meta.pathname.match(/\.js$/)) {
-        console.log('copying %s to %s', meta.pathname, dest);
-        fs.createReadStream(meta.pathname).pipe(fs.createWriteStream(dest));
+scan.on('file', function (pathname, stat, type) {
+    var dest = to + pathname;
+    if (pathname.match(/\.js$/)) {
+        console.log('copying %s to %s', pathname, dest);
+        fs.createReadStream(pathname).pipe(fs.createWriteStream(dest));
     }
 });
 
