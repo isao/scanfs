@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-// copy all .js files from parent dir to /tmp/copytest
+// copy all .js files from this repo's base dir to /tmp/copydemo
 
 var fs = require('fs'),
     path = require('path'),
 
     ignore = ['.git', 'node_modules'],
     from = path.dirname(__dirname),
-    to = '/tmp/copytest/',
+    to = '/tmp/copydemo/',
 
     Scan = require('../'),
     scan = new Scan(ignore);
