@@ -22,9 +22,9 @@ function typeSetter(err, stat, pathname) {
 }
 
 function match(str) { // because str.match doesn't work as a bare callback
-	return function(re) {
-		return str.match(re);
-	}
+    return function (re) {
+        return str.match(re);
+    };
 }
 
 /**
@@ -82,7 +82,7 @@ function getStatCb(item, list, self) {
         self.emit(type, item, stat, type);
 
         if ('error' !== type) {
-        	self.emit('*',  item, stat, type);
+            self.emit('*', item, stat, type);
         }
 
         if ('dir' === type) {
