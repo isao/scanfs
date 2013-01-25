@@ -36,7 +36,6 @@ test('find package.json', function (t) {
 
     scan.on('file', function (pathname, stat, type) {
         if (pathname.match('package.json')) {
-            console.log(pathname);
             t.equal('Isao Yagi <isao@yahoo-inc.com>', require(pathname).author);
         }
     });

@@ -1,0 +1,4 @@
+var path = require('path');
+process.argv.slice(2).map(function (file) {
+	require('./' + path.basename(file));
+});

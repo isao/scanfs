@@ -8,8 +8,8 @@
         "tape": "~0.2.2"
     },
     "scripts": {
-        "test": "node ./tests/*-test.js",
-        "testc": "istanbul cover ./tests/*-test.js"
+        "test": "node ./tests/runner ./tests/*-test.js",
+        "cover": "istanbul cover ./tests/runner ./tests/*-test.js"
     },
     "repository": "",
     "author": "Isao Yagi <isao@yahoo-inc.com>",
