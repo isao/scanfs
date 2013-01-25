@@ -3,25 +3,21 @@
  * Copyrights licensed under the MIT License.
  * See the accompanying LICENSE file for terms.
  */
-/*jslint node:true, sloppy:true */
+/*jshint node:true */
+'use strict';
 
 var fs = require('fs'),
     path = require('path'),
     Stream = require('stream');
 
 
-/**
- * @param {object} err fs.stat() Error object, or null
- * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
- * @param {string} item Pathname
- * @return {string} Name of event/type. If falsey, typer() will be used.
- */
-/*jslint unparam: true*/
-function typeSetter(err, stat, pathname) {
-    // stub for user-provided event category typer
-}
 
-function match(str) { // because str.match doesn't work as a bare callback
+/**
+ * helper function since String#match can't be used as a bare callback
+ * @param {string}
+ * @return {function}
+ */
+function match(str) {
     return function (re) {
         return str.match(re);
     };
@@ -34,7 +30,7 @@ function match(str) { // because str.match doesn't work as a bare callback
  * @return {function} Closure for fs.stat() callback.
  */
 function getStatCb(item, list, self) {
-    'use strict';
+
     /**
      * @param {string} subitem File name from fs.readdir().
      * @return {string} Filesystem path of subitem.
@@ -96,26 +92,6 @@ function getStatCb(item, list, self) {
 }
 
 /**
- * @param {array} list Paths to begin walking. Events emitted for every item.
- * Pathnames emitted are relative to the pathnames in the list.
- */
-function relatively(list) {
-    var item = list.shift();
-    if (item) {
-        this.count += 1;
-        fs.stat(item, getStatCb(item, list, this));
-    }
-}
-
-/**
- * @param {array} list Paths to begin walking. Events emitted for every item.
- * Pathnames emitted are absolute.
- */
-function absolutely(list) {
-    this.relatively(list.map(path.resolve));
-}
-
-/**
  * @constructor
  * @param {array} ignore Array of strings or regexes for exclusion matching
  */
@@ -124,10 +100,36 @@ function Scan(ignore) {
     this.ignore = ignore || [];
 }
 
-Scan.prototype = Object.create(Stream.prototype, {
-    relatively: {value: relatively},
-    absolutely: {value: absolutely},
-    typeSetter: {value: typeSetter}
-});
+Scan.prototype = Object.create(Stream.prototype);
+
+/**
+ * @param {array} list Paths to begin walking. Events emitted for every item.
+ * Pathnames emitted are relative to the pathnames in the list.
+ */
+Scan.prototype.relatively = function relatively(list) {
+    var item = list.shift();
+    if (item) {
+        this.count += 1;
+        fs.stat(item, getStatCb(item, list, this));
+    }
+};
+
+/**
+ * @param {array} list Paths to begin walking. Events emitted for every item.
+ * Pathnames emitted are absolute.
+ */
+Scan.prototype.absolutely = function absolutely(list) {
+    this.relatively(list.map(path.resolve));
+};
+
+/**
+ * @param {object} err fs.stat() Error object, or null
+ * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
+ * @param {string} item Pathname
+ * @return {string} Name of event/type. If falsey, typer() will be used.
+ */
+Scan.prototype.typeSetter = function typeSetter(err, stat, pathname) {
+    // stub for user-provided event category typer
+};
 
 module.exports = Scan;
