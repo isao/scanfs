@@ -11,7 +11,6 @@ var fs = require('fs'),
     Stream = require('stream');
 
 
-
 /**
  * helper function since String#match can't be used as a bare callback
  * @param {string}
@@ -100,6 +99,10 @@ function Scan(ignore) {
     this.ignore = ignore || [];
 }
 
+/**
+ * Inherit from core streams module to get emit()/on(), additional stream-iness
+ * not used yet. Could use EventEmitter...
+ */
 Scan.prototype = Object.create(Stream.prototype);
 
 /**
