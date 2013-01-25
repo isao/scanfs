@@ -79,7 +79,7 @@ function getStatCb(item, list, self) {
     return function statCb(err, stat) {
         var type = self.typeSetter(err, stat, item) || typer(err, stat, item);
 
-        self.emit(type, item, stat, type);
+        self.emit(type, item, stat, err);
 
         if ('error' !== type) {
             self.emit('*', item, stat, type);
