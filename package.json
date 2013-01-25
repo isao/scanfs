@@ -1,7 +1,7 @@
 {
     "name": "scanfs",
     "version": "0.0.0",
-    "description": "Recursively walk the filesystem, emitting events on the way",
+    "description": "Walk filesystem breadth-first, emitting events on the way.",
     "main": "index.js",
     "dependencies": {},
     "devDependencies": {
