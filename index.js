@@ -90,13 +90,13 @@ function getStatCb(item, list, self) {
  * @constructor
  * @param {array} ignore Array of strings or regexes for exclusion matching
  *
- * @Event {file}    -> {string} pathname, {fs.Stat} stat obj, {error} error obj
- * @Event {dir}     -> {string} pathname, {fs.Stat} stat obj, {error} error obj
- * @Event {other}   -> {string} pathname, {fs.Stat} stat obj, {error} error obj
- * @Event {ignored} -> {string} pathname, {fs.Stat} stat obj, {error} error obj
+ * @event {file}    -> {string} pathname, {fs.Stat} stat obj, {error} error obj
+ * @event {dir}     -> {string} pathname, {fs.Stat} stat obj, {error} error obj
+ * @event {other}   -> {string} pathname, {fs.Stat} stat obj, {error} error obj
+ * @event {ignored} -> {string} pathname, {fs.Stat} stat obj, {error} error obj
  *
- * @Event {error}   -> {string} pathname, {error} error obj
- * @Event {done}    -> {integer} count of non-error items, a cumulative total
+ * @event {error}   -> {string} pathname, {error} error obj
+ * @event {done}    -> {integer} count of non-error items, a cumulative total
  */
 function Scan(ignore) {
     this.count = 0;
