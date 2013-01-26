@@ -1,17 +1,21 @@
 {
     "name": "scanfs",
     "version": "0.0.0",
-    "description": "Walk filesystem breadth-first, emitting events on the way.",
+    "description": "Walks filesystem breadth-first, emitting events on the way.",
     "main": "index.js",
     "dependencies": {},
     "devDependencies": {
         "tape": "~0.2.2"
     },
     "scripts": {
-        "test": "node ./tests/runner ./tests/*-test.js",
-        "cover": "istanbul cover ./tests/runner ./tests/*-test.js"
+        "test": "node tests/runner tests/*-test.js",
+        "cover": "istanbul cover tests/runner tests/*-test.js",
+        "plato": "plato -d coverage/plato index.js"
     },
-    "repository": "",
+    "repository": {
+        "type": "git",
+        "url": "git@git.corp.yahoo.com:isao/bearings.git"
+    },
     "author": "Isao Yagi <isao@yahoo-inc.com>",
     "license": "MIT",
     "gitHead": "5b71ccafd5891101ff32dee15b05809c75ccfefd",
