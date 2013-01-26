@@ -13,7 +13,7 @@ var fs = require('fs'),
     scan = new Scan(ignore);
 
 
-scan.on('dir', function (pathname, stat, type) {
+scan.on('dir', function (pathname, stat, type) {
     fs.mkdir(path.join(to, pathname));
 });
 
