@@ -11,7 +11,7 @@ var ignore = [/\/node_modules/, /\/.(git|svn)/],
 
 
 // add a custom event
-scan.typeSetter = function (err, stat, pathname) {
+scan.typeSetter = function (err, pathname, stat) {
     if (pathname.match(/\.js$/)) {
         return '.js';
     }

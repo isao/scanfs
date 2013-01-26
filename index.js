@@ -53,7 +53,7 @@ function getStatCb(item, list, self) {
      * @param {string} item Pathname
      * @return {string} Type of filesystem item and name of event emitted
      */
-    function typer(err, stat, pathname) {
+    function typer(err, pathname, stat) {
         var type = 'other';
         if (err) {
             type = 'error';
@@ -68,7 +68,7 @@ function getStatCb(item, list, self) {
     }
 
     return function statCb(err, stat) {
-        var type = self.typeSetter(err, stat, item) || typer(err, stat, item);
+        var type = self.typeSetter(err, item, stat) || typer(err, item, stat);
 
         self.emit(type, item, stat, err);
 
