@@ -6,7 +6,6 @@ var fs = require('fs'),
     path = require('path'),
 
     ignore = ['.git', 'node_modules'],
-    from = path.dirname(__dirname),
     to = '/tmp/copydemo/',
 
     Scan = require('../'),
