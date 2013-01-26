@@ -17,5 +17,6 @@ test
     npm test
 
 if you have `istanbul` or `plato` installed globally you can do these, respectively:
+
     npm run-script cover
     npm run-script plato
