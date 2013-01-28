@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// find all *.js files in dir(s) passed as command line args
+
 var ignore = [/\/node_modules/, /\/.(git|svn)/],
     found = [],
 

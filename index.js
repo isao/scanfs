@@ -95,7 +95,8 @@ function getStatCb(item, list, self) {
  * @event {other}   -> {string} pathname, {fs.Stat} stat obj, {error} error obj
  * @event {ignored} -> {string} pathname, {fs.Stat} stat obj, {error} error obj
  *
- * @event {error}   -> {string} pathname, {error} error obj
+ * @event {error}   -> {string} pathname, {fs.Stat} stat obj, {error} error obj
+ * @event {*}       -> {string} pathname, {fs.Stat} stat obj, {string} type
  * @event {done}    -> {integer} count of non-error items, a cumulative total
  */
 function Scan(ignore) {
