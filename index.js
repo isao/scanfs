@@ -12,7 +12,7 @@ var fs = require('fs'),
 
 
 /**
- * helper function since String#match can't be used as a bare callback
+ * for String#match in a callback
  * @param {string}
  * @return {function}
  */
@@ -30,10 +30,6 @@ function match(str) {
  */
 function getStatCb(item, list, self) {
 
-    /**
-     * @param {string} subitem File name from fs.readdir().
-     * @return {string} Filesystem path of subitem.
-     */
     function pathing(subitem) {
         return path.join(item, subitem);
     }
@@ -41,7 +37,7 @@ function getStatCb(item, list, self) {
     /**
      * Callback to add the new dir contents to the end of the stack.
      * @param {object} err From fs.readdir() failure.
-     * @param {array} sublist File names contained in current item.
+     * @param {array} sublist File names contained in current item name.
      */
     function recurse(err, sublist) {
         self.relatively(list.concat(sublist.map(pathing)));
@@ -89,15 +85,7 @@ function getStatCb(item, list, self) {
 /**
  * @constructor
  * @param {array} ignore Array of strings or regexes for exclusion matching
- *
- * @event {file}    -> {string} pathname, {fs.Stat} stat obj, {error} error obj
- * @event {dir}     -> {string} pathname, {fs.Stat} stat obj, {error} error obj
- * @event {other}   -> {string} pathname, {fs.Stat} stat obj, {error} error obj
- * @event {ignored} -> {string} pathname, {fs.Stat} stat obj, {error} error obj
- *
- * @event {error}   -> {string} pathname, {fs.Stat} stat obj, {error} error obj
- * @event {*}       -> {string} pathname, {fs.Stat} stat obj, {string} type
- * @event {done}    -> {integer} count of non-error items, a cumulative total
+ * @events file, dir, other, ignored, *, error
  */
 function Scan(ignore) {
     this.count = 0;
