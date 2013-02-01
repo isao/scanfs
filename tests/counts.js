@@ -14,30 +14,16 @@ test('done count equals files + dirs', function (t) {
         files = 0,
         dirs = 0;
 
-    scan.on('file', function (pathname, stat, type) {
+    scan.on('file', function (pathname, stat, err) {
         files++;
     });
 
-    scan.on('dir', function (pathname, stat, type) {
+    scan.on('dir', function (pathname, stat, err) {
         dirs++;
     });
 
     scan.on('done', function (count) {
         t.equal(count, files + dirs);
-    });
-
-    scan.relatively([from]);
-});
-
-test('find package.json', function (t) {
-    t.plan(1);
-
-    var scan = new Scan(ignore);
-
-    scan.on('file', function (pathname, stat, type) {
-        if (pathname.match('package.json')) {
-            t.equal('Isao Yagi <isao@yahoo-inc.com>', require(pathname).author);
-        }
     });
 
     scan.relatively([from]);
@@ -49,7 +35,7 @@ test('"*" count equals done count', function (t) {
     var scan = new Scan(ignore),
         count = 0;
 
-    scan.on('*', function (pathname, stat, type) {
+    scan.on('*', function (pathname, stat, err) {
         count++;
     });
 
@@ -66,7 +52,7 @@ test('counts same for scan.absolutely()', function (t) {
     var scan = new Scan(ignore),
         count = 0;
 
-    scan.on('*', function (pathname, stat, type) {
+    scan.on('*', function (pathname, stat, err) {
         count++;
     });
 

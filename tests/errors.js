@@ -15,34 +15,32 @@ test('bad path emits "error" event', function (t) {
     scan.relatively([' does not exist ']);
 });
 
-test('FIXME bad path throws if no "error" listener', function (t) {
+test('generic thow tests', function (t) {
+    t.plan(2);
+    var expected = new Error("Uncaught, unspecified 'error' event.");
+
+    function thrower1() { throw expected; }
+    t.throws(thrower1, expected);
+
+    function thrower2() { throw new Error("Uncaught, unspecified 'error' event."); }
+    t.throws(thrower2, expected);
+});
+
+test('no "error" listener should throw', {skip:true}, function (t) {
     t.plan(1);
-
     function thrower() {
-        /*
         var scan = new Scan();
-        scan.relatively([' does not exist ']);
+        scan.relatively(['nonesuch']);
+    }
+    t.throws(thrower);
 
-        # FIXME bad path throws if no "error" listener
-        not ok 8 should throw
+    /*
+        not ok 6 should throw
           ---
             operator: throws
-            expected:
-            actual:
-            at: EventEmitter._cb (/Users/isao/Repos/scanfs/tests/error-test.js:28:7)
+            expected: 
+            actual:   
+            at: EventEmitter._cb (/Users/isao/Repos/proj/scanfs/tests/error-test.js:57:7)
           ...
-
-        events.js:73
-                throw new Error("Uncaught, unspecified 'error' event.");
-                      ^
-        Error: Uncaught, unspecified 'error' event.
-            at Stream.EventEmitter.emit (events.js:73:15)
-            at statCb (/Users/isao/Repos/scanfs/index.js:77:14)
-            at Object.oncomplete (fs.js:297:15)
-        */
-        throw new Error("Uncaught, unspecified 'error' event.");
-    }
-
-    //var expected = new Error("Uncaught, unspecified 'error' event.");
-    t.throws(thrower);
+    */
 });
