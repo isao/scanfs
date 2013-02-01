@@ -1,4 +1,5 @@
-var basename = require('path').basename;
+// `require` all files passed via command line
+var path = require('path');
 process.argv.slice(2).map(function (file) {
-    require('./' + basename(file));
+    require('./' + path.relative(__dirname, file));
 });
