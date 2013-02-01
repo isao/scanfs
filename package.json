@@ -8,8 +8,8 @@
         "tape": "~0.2.2"
     },
     "scripts": {
-        "test": "node tests/runner tests/*-test.js",
-        "cover": "istanbul cover tests/runner tests/*-test.js",
+        "test": "node tests/runner tests/*.js",
+        "cover": "istanbul cover tests/runner tests/*.js",
         "plato": "plato -d coverage/plato index.js"
     },
     "repository": {
