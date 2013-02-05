@@ -1,6 +1,6 @@
 {
     "name": "scanfs",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "Walks filesystem breadth-first, emitting events on the way.",
     "main": "index.js",
     "dependencies": {},
@@ -9,8 +9,8 @@
     },
     "scripts": {
         "test": "node tests/runner tests/*.js",
-        "cover": "istanbul cover tests/runner tests/*.js",
-        "plato": "plato -d coverage/plato index.js"
+        "cover": "istanbul cover --dir reports/coverage tests/runner tests/*.js",
+        "plato": "plato -d reports/plato index.js"
     },
     "repository": {
         "type": "git",
