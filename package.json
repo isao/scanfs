@@ -14,10 +14,9 @@
     },
     "repository": {
         "type": "git",
-        "url": "git@git.corp.yahoo.com:isao/bearings.git"
+        "url": "git@github.com:isao/scanfs.git"
     },
     "author": "Isao Yagi <isao@yahoo-inc.com>",
     "license": "MIT",
-    "gitHead": "5b71ccafd5891101ff32dee15b05809c75ccfefd",
     "keywords": ["filesystem", "walk", "find", "traverse"]
 }

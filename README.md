@@ -5,7 +5,7 @@ A small library that does a breadth-first walk of the filesystem, and emits even
 
 install
 -------
-    npm i --save git+ssh://git@git.corp:isao/scanfs.git#develop
+    npm i --save git@github.com:isao/scanfs.git#develop
 
 usage
 -----
@@ -20,3 +20,7 @@ tests use @substack's `tape`. if you have @gotwarlost's `istanbul` or @jsoverson
 
     npm run-script cover
     npm run-script plato
+
+license
+-------
+MIT licensed by permission from my employer. See LICENSE.txt.
