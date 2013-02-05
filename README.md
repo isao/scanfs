@@ -5,7 +5,7 @@ A small library that does a breadth-first walk of the filesystem, and emits even
 
 install
 -------
-    npm i --save git@github.com:isao/scanfs.git#develop
+    npm i --save git@github.com:isao/scanfs.git
 
 usage
 -----
@@ -20,6 +20,14 @@ tests use @substack's `tape`. if you have @gotwarlost's `istanbul` or @jsoverson
 
     npm run-script cover
     npm run-script plato
+
+thanks
+------
+There are no direct dependencies, but these are optional, and nice:
+
+* James Halliday for [tape](https://github.com/substack/tape/) test harness.
+* Krishnan Anantheswaran for [istanbul](https://github.com/gotwarlost/istanbul/) unit test coverage.
+* Jarrod Overson for [plato](https://github.com/jsoverson/plato) code complexity analysis.
 
 license
 -------
