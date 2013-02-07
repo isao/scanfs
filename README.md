@@ -1,4 +1,4 @@
-Scanfs [![Build Status](https://travis-ci.org/isao/scanfs.png)](https://travis-ci.org/isao/scanfs)
+scanfs [![Build Status](https://travis-ci.org/isao/scanfs.png)](https://travis-ci.org/isao/scanfs)
 ======
 
 A small library that does a breadth-first walk of the filesystem, and emits events on the way.
