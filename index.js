@@ -40,7 +40,9 @@ function getStatCb(item, list, self) {
      * @param {array} sublist File names contained in current item name.
      */
     function recurse(err, sublist) {
-        self.relatively(list.concat(sublist.map(pathing)));
+        process.nextTick(function() {
+        	self.relatively(list.concat(sublist.map(pathing)));
+        });
     }
 
     /**
