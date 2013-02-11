@@ -9,7 +9,7 @@ install
 
 usage
 -----
-See ./examples
+See [`./examples/`](./examples/).
 
 test
 ----
