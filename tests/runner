@@ -3,3 +3,4 @@ var relative = require('path').relative;
 process.argv.slice(2).map(function (file) {
     require('./' + relative(__dirname, file));
 });
+

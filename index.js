@@ -6,6 +6,10 @@
 /*jshint node:true */
 'use strict';
 
+// TODO
+// - allow emitted filenames to have head parts chopped off
+// - self.emit(name, err, object) always
+
 var fs = require('fs'),
     path = require('path'),
     Stream = require('stream');
