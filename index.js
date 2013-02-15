@@ -8,7 +8,6 @@
 
 // TODO
 // - allow emitted filenames to have head parts chopped off
-// - self.emit(name, err, object) always
 
 var fs = require('fs'),
     path = require('path'),
@@ -16,14 +15,15 @@ var fs = require('fs'),
 
 
 /**
- * for String#match in a callback
- * @param {string}
- * @return {function}
+ * @param {array} list Items remaining to fs.stat().
+ * @param {object} self This instance object.
  */
-function match(str) {
-    return function (re) {
-        return str.match(re);
-    };
+function statOne(list, self) {
+    var item = list.shift();
+    if (item) {
+        self.count += 1;
+        fs.stat(item, getStatCb(item, list, self));
+    }
 }
 
 /**
@@ -38,14 +38,9 @@ function getStatCb(item, list, self) {
         return path.join(item, subitem);
     }
 
-    /**
-     * Callback to add the new dir contents to the end of the stack.
-     * @param {object} err From fs.readdir() failure.
-     * @param {array} sublist File names contained in current item name.
-     */
     function recurse(err, sublist) {
         process.nextTick(function() {
-        	self.relatively(list.concat(sublist.map(pathing)));
+            statOne(list.concat(sublist.map(pathing)), self);
         });
     }
 
@@ -59,7 +54,7 @@ function getStatCb(item, list, self) {
         var type = 'other';
         if (err) {
             type = 'error';
-        } else if (self.ignore.length && self.ignore.some(match(pathname))) {
+        } else if (self.ignore.some(matchCb(pathname))) {
             type = 'ignored';
         } else if (stat.isFile()) {
             type = 'file';
@@ -88,6 +83,21 @@ function getStatCb(item, list, self) {
     };
 }
 
+function matchCb(str) {
+    return function (re) {
+        return str.match(re);
+    };
+}
+
+function arrayify(input) {
+    if('string' === typeof input) {
+        input = [input];
+    } else if(!(input instanceof Array) && (undefined !== input)) {
+        throw new TypeError('arguments must be either strings or arrays');
+    }
+    return input || [];
+}
+
 /**
  * @constructor
  * @param {array} ignore Array of strings or regexes for exclusion matching
@@ -95,7 +105,7 @@ function getStatCb(item, list, self) {
  */
 function Scan(ignore) {
     this.count = 0;
-    this.ignore = ignore || [];
+    this.ignore = arrayify(ignore);
 }
 
 /**
@@ -108,20 +118,16 @@ Scan.prototype = Object.create(Stream.prototype);
  * @param {array} list Paths to begin walking. Events emitted for every item.
  * Pathnames emitted are relative to the pathnames in the list.
  */
-Scan.prototype.relatively = function relatively(list) {
-    var item = list.shift();
-    if (item) {
-        this.count += 1;
-        fs.stat(item, getStatCb(item, list, this));
-    }
+Scan.prototype.relatively = function(list) {
+    statOne(arrayify(list), this);
 };
 
 /**
  * @param {array} list Paths to begin walking. Events emitted for every item.
  * Pathnames emitted are absolute.
  */
-Scan.prototype.absolutely = function absolutely(list) {
-    this.relatively(list.map(path.resolve));
+Scan.prototype.absolutely = function(list) {
+    statOne(arrayify(list).map(path.resolve), this);
 };
 
 /**
