@@ -6,9 +6,6 @@
 /*jshint node:true */
 'use strict';
 
-// TODO
-// - allow emitted filenames to have head parts chopped off
-
 var fs = require('fs'),
     path = require('path'),
     Stream = require('stream');
@@ -46,7 +43,7 @@ function getStatCb(item, list, self) {
 
     /**
      * @param {object} err fs.stat() Error object, or null
-     * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
+     * @param {object} stat fs.Stats obj, see `man 2 stat` http://bit.ly/Sb0KRd
      * @param {string} item Pathname
      * @return {string} Type of filesystem item and name of event emitted
      */
@@ -94,11 +91,11 @@ function arrayify(input) {
     if('string' === typeof input) {
         arr = [input];
     } else if(undefined === input) {
-    	arr = [];
+        arr = [];
     } else if(!input instanceof Array) {
         throw new TypeError('arguments must be either strings or arrays');
     } else {
-    	arr = input.slice();
+        arr = input.slice();
     }
     return arr;
 }
@@ -141,7 +138,7 @@ Scan.prototype.absolutely = function(list) {
  * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
  * @return {string} Name of event/type. If falsey, typer() will be used.
  */
-Scan.prototype.typeSetter = function typeSetter(err, item, stat) {
+Scan.prototype.typeSetter = function(err, item, stat) {
     // stub for user-provided event category typer
 };
 
