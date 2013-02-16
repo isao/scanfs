@@ -88,12 +88,12 @@ function matchCb(str) {
 }
 
 function arrayify(input) {
-    var arr = [];
-    if('string' === typeof input) {
-        arr = [input];
-    } else if(undefined === input) {
+    var arr;
+    if(undefined === input) {
         arr = [];
-    } else if(!input instanceof Array) {
+    } else if(('string' === typeof input) || (input instanceof RegExp)) {
+        arr = [input];
+    } else if(!(input instanceof Array)) {
         throw new TypeError('arguments must be either strings or arrays');
     } else {
         arr = input.slice();
