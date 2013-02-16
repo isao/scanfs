@@ -1,7 +1,7 @@
 var path = require('path'),
     test = require('tape'),
     Scan = require('../'),
-    ignore = [/\/node_modules/, /\/.git/],
+    ignore = [/node_modules/, /\.git/],
     from = path.dirname(__dirname);
 
 test('find package.json', function (t) {
@@ -14,7 +14,7 @@ test('find package.json', function (t) {
         }
     });
 
-    scan.relatively([from]);
+    scan.relatively(from);
 });
 
 test('verify params', function (t) {
@@ -50,5 +50,5 @@ test('verify params', function (t) {
     	t.end();
     })
 
-    scan.relatively([from]);
+    scan.relatively(__dirname);
 });
