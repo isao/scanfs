@@ -76,7 +76,7 @@ function getStatCb(item, list, self) {
         if ('dir' === type) {
             fs.readdir(item, recurse);
         } else if (list.length) {
-            self.statOne(list, self);
+            statOne(list, self);
         } else {
             self.emit('done', self.count);
         }
