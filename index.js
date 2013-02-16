@@ -12,18 +12,6 @@ var fs = require('fs'),
 
 
 /**
- * @param {array} list Items remaining to fs.stat().
- * @param {object} self This instance object.
- */
-function statOne(list, self) {
-    var item = list.shift();
-    if (item) {
-        self.count += 1;
-        fs.stat(item, getStatCb(item, list, self));
-    }
-}
-
-/**
  * @param {string} item File system path.
  * @param {array} list Items remaining to fs.stat().
  * @param {object} self This instance object.
@@ -81,6 +69,18 @@ function getStatCb(item, list, self) {
             self.emit('done', self.count);
         }
     };
+}
+
+/**
+ * @param {array} list Items remaining to fs.stat().
+ * @param {object} self This instance object.
+ */
+function statOne(list, self) {
+    var item = list.shift();
+    if (item) {
+        self.count++;
+        fs.stat(item, getStatCb(item, list, self));
+    }
 }
 
 function matchCb(str) {
