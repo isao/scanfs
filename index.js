@@ -90,12 +90,17 @@ function matchCb(str) {
 }
 
 function arrayify(input) {
+    var arr = [];
     if('string' === typeof input) {
-        input = [input];
-    } else if(!(input instanceof Array) && (undefined !== input)) {
+        arr = [input];
+    } else if(undefined === input) {
+    	arr = [];
+    } else if(!input instanceof Array) {
         throw new TypeError('arguments must be either strings or arrays');
+    } else {
+    	arr = input.slice();
     }
-    return input || [];
+    return arr;
 }
 
 /**
