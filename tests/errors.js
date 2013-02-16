@@ -1,6 +1,7 @@
 var test = require('tape'),
     Scan = require('../');
 
+
 test('bad path emits "error" event', function (t) {
     t.plan(3);
 
@@ -13,6 +14,20 @@ test('bad path emits "error" event', function (t) {
     });
 
     scan.relatively([' does not exist ']);
+});
+
+test('bad ignores throws', function(t) {
+
+    t.plan(2);
+
+    t.throws(function thrower() {
+        var scan = Scan(null);
+    });
+
+    t.throws(function thrower() {
+        var scan = Scan({});
+    });
+
 });
 
 test('generic thow tests', function (t) {
@@ -34,13 +49,13 @@ test('no "error" listener should throw', {skip:true}, function (t) {
     }
     t.throws(thrower);
 
-    /*
-        not ok 6 should throw
-          ---
-            operator: throws
-            expected: 
-            actual:   
-            at: EventEmitter._cb (/Users/isao/Repos/proj/scanfs/tests/error-test.js:57:7)
-          ...
-    */
+    //
+    // not ok 6 should throw
+    //   ---
+    //     operator: throws
+    //     expected:
+    //     actual:
+    //     at: EventEmitter._cb (/Users/isao/Repos/proj/scanfs/tests/error-test.js:57:7)
+    //   ...
+    //
 });
