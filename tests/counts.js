@@ -3,47 +3,67 @@ var path = require('path'),
 
     Scan = require('../'),
 
-    ignore = [/\/node_modules/, /\/.git/],
+    ignore = [/node_modules/, /\.git/],
     from = path.dirname(__dirname);
 
 
-test('done count equals files + dirs', function (t) {
+test('done count equals files + dirs + ignored', function (t) {
     t.plan(1);
 
-    var scan = new Scan(),
-        files = 0,
-        dirs = 0;
+    var scan = new Scan(ignore),
+        items = 0;
 
     scan.on('file', function (err, pathname, stat) {
-        files++;
+        items++;
     });
 
     scan.on('dir', function (err, pathname, stat) {
-        dirs++;
+        items++;
+    });
+
+    scan.on('ignored', function (err, pathname, stat) {
+        items++;
     });
 
     scan.on('done', function (count) {
-        t.equal(count, files + dirs);
+        t.equal(count, items);
     });
 
     scan.relatively([from]);
 });
 
-test('"*" count equals done count', function (t) {
+test('ignore one works', function (t) {
     t.plan(1);
 
-    var scan = new Scan(ignore),
-        count = 0;
+    var scan = new Scan('counts.js'),
+        files = 0;
 
-    scan.on('*', function (err, pathname, stat) {
-        count++;
+    scan.on('file', function (err, pathname, stat) {
+        files++;
     });
 
-    scan.on('done', function (done_count) {
-        t.equal(count, done_count);
+    scan.on('done', function (count) {
+        t.equal(files, count - 2);
     });
 
-    scan.relatively([from]);
+    scan.relatively(__dirname);
+});
+
+test('ignore a couple works', function (t) {
+    t.plan(1);
+
+    var scan = new Scan(['counts.js', 'errors.js']),
+        files = 0;
+
+    scan.on('file', function (err, pathname, stat) {
+        files++;
+    });
+
+    scan.on('done', function (count) {
+        t.equal(files, count - 3);
+    });
+
+    scan.relatively(__dirname);
 });
 
 test('counts same for scan.absolutely()', function (t) {
