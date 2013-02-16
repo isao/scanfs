@@ -49,11 +49,7 @@ function getStatCb(item, list, self) {
      */
     function typer(err, pathname, stat) {
         var type = 'other';
-        if (err) {
-            type = 'error';
-        } else if (self.ignore.some(matchCb(pathname))) {
-            type = 'ignored';
-        } else if (stat.isFile()) {
+        if (stat.isFile()) {
             type = 'file';
         } else if (stat.isDirectory()) {
             type = 'dir';
@@ -62,10 +58,17 @@ function getStatCb(item, list, self) {
     }
 
     return function statCb(err, stat) {
-        var type = self.typeSetter(err, item, stat) || typer(err, item, stat);
+        var type;
+
+        if (err) {
+            type = 'error';
+        } else if (self.ignore.some(matchCb(item))) {
+            type = 'ignored';
+        } else {
+            type = self.typeSetter(err, item, stat) || typer(err, item, stat);
+        }
 
         self.emit(type, err, item, stat);
-
         if ('error' !== type) {
             self.emit('*', err, item, stat, type);
         }
