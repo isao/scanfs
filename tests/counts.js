@@ -43,7 +43,7 @@ test('ignore one works', function (t) {
     });
 
     scan.on('done', function (count) {
-        t.equal(files, count - 2);
+        t.equal(files, count - 2); //count is minus dir + ignores
     });
 
     scan.relatively(__dirname);
@@ -60,7 +60,7 @@ test('ignore a couple works', function (t) {
     });
 
     scan.on('done', function (count) {
-        t.equal(files, count - 3);
+        t.equal(files, count - 3); //count is minus dir + ignores
     });
 
     scan.relatively(__dirname);
