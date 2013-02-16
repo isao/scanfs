@@ -6,7 +6,7 @@ test('bad path emits "error" event', function (t) {
 
     var scan = new Scan();
 
-    scan.on('error', function (pathname, stat, err) {
+    scan.on('error', function (err, pathname, stat) {
         t.same('ENOENT', err.code);
         t.same(' does not exist ', pathname);
         t.same(undefined, stat);

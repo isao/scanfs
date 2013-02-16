@@ -8,7 +8,7 @@ test('find package.json', function (t) {
     t.plan(1);
     var scan = new Scan(ignore);
 
-    scan.on('file', function (pathname, stat, err) {
+    scan.on('file', function (err, pathname, stat) {
         if (pathname.match('package.json')) {
             t.equal('Isao Yagi <isao@yahoo-inc.com>', require(pathname).author);
         }
@@ -20,14 +20,14 @@ test('find package.json', function (t) {
 test('verify params', function (t) {
     var scan = new Scan(ignore);
 
-    scan.on('*', function (pathname, stat, type) {
+    scan.on('*', function (err, pathname, stat, type) {
         t.same(typeof pathname, 'string');
         t.same(typeof stat, 'object');
         t.same(typeof type, 'string');
         t.same(typeof stat.constructor, 'function');
     });
 
-    scan.on('file', function (pathname, stat, err) {
+    scan.on('file', function (err, pathname, stat) {
         t.same(typeof pathname, 'string');
         t.same(typeof stat, 'object');
         t.same(err, null);
@@ -36,7 +36,7 @@ test('verify params', function (t) {
         t.false(stat.isDirectory(), 'it is not dir');
     });
 
-    scan.on('dir', function (pathname, stat, err) {
+    scan.on('dir', function (err, pathname, stat) {
         t.same(typeof pathname, 'string');
         t.same(typeof stat, 'object');
         t.same(err, null);

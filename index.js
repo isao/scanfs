@@ -67,10 +67,10 @@ function getStatCb(item, list, self) {
     return function statCb(err, stat) {
         var type = self.typeSetter(err, item, stat) || typer(err, item, stat);
 
-        self.emit(type, item, stat, err);
+        self.emit(type, err, item, stat);
 
         if ('error' !== type) {
-            self.emit('*', item, stat, type);
+            self.emit('*', err, item, stat, type);
         }
 
         if ('dir' === type) {
@@ -137,11 +137,11 @@ Scan.prototype.absolutely = function(list) {
 
 /**
  * @param {object} err fs.stat() Error object, or null
- * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
  * @param {string} item Pathname
+ * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
  * @return {string} Name of event/type. If falsey, typer() will be used.
  */
-Scan.prototype.typeSetter = function typeSetter(err, stat, pathname) {
+Scan.prototype.typeSetter = function typeSetter(err, item, stat) {
     // stub for user-provided event category typer
 };
 

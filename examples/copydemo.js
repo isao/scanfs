@@ -12,11 +12,11 @@ var fs = require('fs'),
     scan = new Scan(ignore);
 
 
-scan.on('dir', function (pathname, stat, type) {
+scan.on('dir', function (err, pathname, stat) {
     fs.mkdir(path.join(to, pathname));
 });
 
-scan.on('file', function (pathname, stat, type) {
+scan.on('file', function (err, pathname, stat) {
     var dest = to + pathname;
     if (pathname.match(/\.js$/)) {
         console.log('copying %s to %s', pathname, dest);

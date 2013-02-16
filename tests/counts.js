@@ -14,11 +14,11 @@ test('done count equals files + dirs', function (t) {
         files = 0,
         dirs = 0;
 
-    scan.on('file', function (pathname, stat, err) {
+    scan.on('file', function (err, pathname, stat) {
         files++;
     });
 
-    scan.on('dir', function (pathname, stat, err) {
+    scan.on('dir', function (err, pathname, stat) {
         dirs++;
     });
 
@@ -35,7 +35,7 @@ test('"*" count equals done count', function (t) {
     var scan = new Scan(ignore),
         count = 0;
 
-    scan.on('*', function (pathname, stat, err) {
+    scan.on('*', function (err, pathname, stat) {
         count++;
     });
 
@@ -52,7 +52,7 @@ test('counts same for scan.absolutely()', function (t) {
     var scan = new Scan(ignore),
         count = 0;
 
-    scan.on('*', function (pathname, stat, err) {
+    scan.on('*', function (err, pathname, stat) {
         count++;
     });
 

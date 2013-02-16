@@ -2,7 +2,7 @@
 
 // find all *.js files in dir(s) passed as command line args
 
-var ignore = [/\/node_modules/, /\/.(git|svn)/],
+var ignore = ['node_modules', /\/.(git|svn)/],
     found = [],
 
     Scan = require('../'),
@@ -15,17 +15,17 @@ var ignore = [/\/node_modules/, /\/.(git|svn)/],
 // add a custom event
 scan.typeSetter = function (err, pathname, stat) {
     if (pathname.match(/\.js$/)) {
-        return '.js';
+        return 'javascript!';
     }
 };
 
 // listen for it
-scan.on('.js', function (pathname, stat, type) {
+scan.on('javascript!', function (err, pathname, stat) {
     found.push(pathname);
 });
 
 // default event types include 'error', '*', 'file', 'dir', 'other', 'ignored'
-scan.on('file', function (pathname, stat, type) {
+scan.on('file', function (err, pathname, stat) {
     // .js files no longer fire a 'file' event, but they still fire '*'
     process.stdout.write('.');
 });
