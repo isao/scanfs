@@ -57,9 +57,7 @@ function getStatCb(item, list, self) {
         }
 
         self.emit(type, err, item, stat);
-        if ('error' !== type) {
-            self.emit('*', err, item, stat, type);
-        }
+        self.emit('*', err, item, stat, type);
 
         if ('dir' === type) {
             fs.readdir(item, recurse);
