@@ -130,7 +130,10 @@ Scan.prototype.relatively = function(list) {
  * Pathnames emitted are absolute.
  */
 Scan.prototype.absolutely = function(list) {
-    statOne(arrayify(list).map(path.resolve), this);
+    function resolve(pathname) {
+    	return path.resolve(pathname);
+    }
+    statOne(arrayify(list).map(resolve), this);
 };
 
 /**
