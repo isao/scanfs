@@ -5,13 +5,12 @@
     "main": "index.js",
     "dependencies": {},
     "devDependencies": {
-        "argg": "~0.0.0",
-        "tape": "~0.2.2"
+        "tape": "~0.3.0"
     },
     "scripts": {
-        "test": "node node_modules/argg tests/*.js",
-        "cover": "istanbul cover --dir reports/coverage node_modules/argg tests/*.js",
-        "plato": "plato -d reports/plato index.js"
+        "test": "tape tests/*.js",
+        "cover": "istanbul cover --dir artifacts/coverage node_modules/.bin/tape tests/*.js",
+        "plato": "plato -d artifacts/plato index.js"
     },
     "repository": {
         "type": "git",
