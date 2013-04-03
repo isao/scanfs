@@ -1,5 +1,5 @@
 var path = require('path'),
-    test = require('tape'),
+    test = require('tap').test,
     Scan = require('../'),
     ignore = [/node_modules/, /\.git/],
     from = path.dirname(__dirname);

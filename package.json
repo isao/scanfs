@@ -1,22 +1,27 @@
 {
-    "name": "scanfs",
-    "version": "0.0.2",
-    "description": "Walks filesystem breadth-first, emitting events on the way.",
-    "main": "index.js",
-    "dependencies": {},
-    "devDependencies": {
-        "tape": "~0.3.0"
-    },
-    "scripts": {
-        "test": "tape tests/*.js",
-        "cover": "istanbul cover --dir artifacts/coverage node_modules/.bin/tape tests/*.js",
-        "plato": "plato -d artifacts/plato index.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/isao/scanfs.git"
-    },
-    "author": "Isao Yagi <isao@yahoo-inc.com>",
-    "license": "MIT",
-    "keywords": ["filesystem", "walk", "find", "traverse"]
+  "name": "scanfs",
+  "version": "0.0.2",
+  "description": "Walks filesystem breadth-first, emitting events on the way.",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "tap": "~0.4.1"
+  },
+  "scripts": {
+    "test": "node tests",
+    "cover": "istanbul cover --dir artifacts/coverage tests",
+    "plato": "plato -d artifacts/plato index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/isao/scanfs.git"
+  },
+  "author": "Isao Yagi <isao@yahoo-inc.com>",
+  "license": "MIT",
+  "keywords": [
+    "filesystem",
+    "walk",
+    "find",
+    "traverse"
+  ]
 }
