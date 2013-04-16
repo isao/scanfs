@@ -111,10 +111,6 @@ function Scan(ignore) {
     this.ignore = arrayify(ignore);
 }
 
-/**
- * Inherit from core streams module to get emit()/on(), additional stream-iness
- * not used yet. Could use EventEmitter...
- */
 Scan.prototype = Object.create(Stream.prototype);
 
 /**
@@ -131,13 +127,13 @@ Scan.prototype.relatively = function(list) {
  */
 Scan.prototype.absolutely = function(list) {
     function resolve(pathname) {
-    	return path.resolve(pathname);
+        return path.resolve(pathname); // pass only 1st arg of map to resolve()
     }
     statOne(arrayify(list).map(resolve), this);
 };
 
 /**
- * @param {object} err fs.stat() Error object, or null
+ * @param {object|null} err fs.stat() Error object, or null
  * @param {string} item Pathname
  * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
  * @return {string} Name of event/type. If falsey, typer() will be used.
