@@ -12,6 +12,34 @@ var fs = require('fs'),
 
 
 /**
+ * @param {array} list Items remaining to fs.stat().
+ * @param {object} self This instance object.
+ */
+function statOne(list, self) {
+    var item = list.shift();
+    if (item) {
+        self.count++;
+        fs.stat(item, getStatCb(item, list, self));
+    }
+}
+
+/**
+ * @param {object} err fs.stat() Error object, or null
+ * @param {object} stat fs.Stats obj, see `man 2 stat` http://bit.ly/Sb0KRd
+ * @param {string} item Pathname
+ * @return {string} Type of filesystem item and name of event emitted
+ */
+function typer(err, pathname, stat) {
+    var type = 'other';
+    if (stat.isFile()) {
+        type = 'file';
+    } else if (stat.isDirectory()) {
+        type = 'dir';
+    }
+    return type;
+}
+
+/**
  * @param {string} item File system path.
  * @param {array} list Items remaining to fs.stat().
  * @param {object} self This instance object.
@@ -27,22 +55,6 @@ function getStatCb(item, list, self) {
         process.nextTick(function() {
             statOne(list.concat(sublist.map(pathing)), self);
         });
-    }
-
-    /**
-     * @param {object} err fs.stat() Error object, or null
-     * @param {object} stat fs.Stats obj, see `man 2 stat` http://bit.ly/Sb0KRd
-     * @param {string} item Pathname
-     * @return {string} Type of filesystem item and name of event emitted
-     */
-    function typer(err, pathname, stat) {
-        var type = 'other';
-        if (stat.isFile()) {
-            type = 'file';
-        } else if (stat.isDirectory()) {
-            type = 'dir';
-        }
-        return type;
     }
 
     return function statCb(err, stat) {
@@ -69,18 +81,6 @@ function getStatCb(item, list, self) {
             self.emit('done', self.count);
         }
     };
-}
-
-/**
- * @param {array} list Items remaining to fs.stat().
- * @param {object} self This instance object.
- */
-function statOne(list, self) {
-    var item = list.shift();
-    if (item) {
-        self.count++;
-        fs.stat(item, getStatCb(item, list, self));
-    }
 }
 
 function arrayify(input) {
