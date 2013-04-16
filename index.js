@@ -50,8 +50,10 @@ function getStatCb(item, list, self) {
 
         if (err) {
             type = 'error';
-        } else if (self.ignore.some(matchCb(item))) {
+
+        } else if (self.ignore.some(String.prototype.match.bind(item))) {
             type = 'ignored';
+
         } else {
             type = self.typeSetter(err, item, stat) || typer(err, item, stat);
         }
@@ -79,12 +81,6 @@ function statOne(list, self) {
         self.count++;
         fs.stat(item, getStatCb(item, list, self));
     }
-}
-
-function matchCb(str) {
-    return function (re) {
-        return str.match(re);
-    };
 }
 
 function arrayify(input) {
