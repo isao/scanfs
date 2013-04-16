@@ -3,7 +3,6 @@
  * Copyrights licensed under the MIT License.
  * See the accompanying LICENSE file for terms.
  */
-/*jshint node:true */
 'use strict';
 
 var fs = require('fs'),
@@ -62,10 +61,8 @@ function getStatCb(item, list, self) {
 
         if (err) {
             type = 'error';
-
         } else if (self.ignore.some(String.prototype.match.bind(item))) {
             type = 'ignored';
-
         } else {
             type = self.typeSetter(err, item, stat) || typer(err, item, stat);
         }
