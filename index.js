@@ -11,22 +11,11 @@ var fs = require('fs'),
 
 
 /**
- * @param {array} list Items remaining to fs.stat().
- * @param {object} self This instance object.
- */
-function statOne(list, self) {
-    var item = list.shift();
-    if (item) {
-        self.count++;
-        fs.stat(item, getStatCb(item, list, self));
-    }
-}
-
-/**
+ * Set the type of event to fire
  * @param {object} err fs.stat() Error object, or null
  * @param {object} stat fs.Stats obj, see `man 2 stat` http://bit.ly/Sb0KRd
- * @param {string} item Pathname
- * @return {string} Type of filesystem item and name of event emitted
+ * @param {string} item pathname of file, directory, socket, fifo, etc.
+ * @return {string} name of event to emit
  */
 function typer(err, pathname, stat) {
     var type = 'other';
@@ -36,48 +25,6 @@ function typer(err, pathname, stat) {
         type = 'dir';
     }
     return type;
-}
-
-/**
- * @param {string} item File system path.
- * @param {array} list Items remaining to fs.stat().
- * @param {object} self This instance object.
- * @return {function} Closure for fs.stat() callback.
- */
-function getStatCb(item, list, self) {
-
-    function pathing(subitem) {
-        return path.join(item, subitem);
-    }
-
-    function recurse(err, sublist) {
-        process.nextTick(function() {
-            statOne(list.concat(sublist.map(pathing)), self);
-        });
-    }
-
-    return function statCb(err, stat) {
-        var type;
-
-        if (err) {
-            type = 'error';
-        } else if (self.ignore.some(String.prototype.match.bind(item))) {
-            type = 'ignored';
-        } else {
-            type = self.typeSetter(err, item, stat) || typer(err, item, stat);
-        }
-
-        self.emit(type, err, item, stat);
-        self.emit('*', err, item, stat, type);
-
-        if ('dir' === type) {
-            fs.readdir(item, recurse);
-        } else if (list.length) {
-            statOne(list, self);
-        } else {
-            self.emit('done', self.count);
-        }
-    };
 }
 
 function arrayify(input) {
@@ -111,7 +58,7 @@ Scan.prototype = Object.create(Stream.prototype);
  * Pathnames emitted are relative to the pathnames in the list.
  */
 Scan.prototype.relatively = function(list) {
-    statOne(arrayify(list), this);
+    this.statOne(arrayify(list));
 };
 
 /**
@@ -122,7 +69,62 @@ Scan.prototype.absolutely = function(list) {
     function resolve(pathname) {
         return path.resolve(pathname); // pass only 1st arg of map to resolve()
     }
-    statOne(arrayify(list).map(resolve), this);
+    this.statOne(arrayify(list).map(resolve));
+};
+
+/**
+ * @param {array} list Items remaining to fs.stat().
+ * @param {object} self This instance object.
+ */
+Scan.prototype.statOne = function(list) {
+    var item = list.shift();
+    if (item) {
+        this.count++;
+        fs.stat(item, this.getStatCb(item, list));
+    }
+};
+
+/**
+ * @param {string} item File system path.
+ * @param {array} list Items remaining to fs.stat().
+ * @param {object} self This instance object.
+ * @return {function} Closure for fs.stat() callback.
+ */
+Scan.prototype.getStatCb = function(item, list) {
+    var self = this;
+
+    function pathing(subitem) {
+        return path.join(item, subitem);
+    }
+
+    function recurse(err, sublist) {
+        process.nextTick(function() {
+            self.statOne(list.concat(sublist.map(pathing)));
+        });
+    }
+
+    return function statCb(err, stat) {
+        var type;
+
+        if (err) {
+            type = 'error';
+        } else if (self.ignore.some(String.prototype.match.bind(item))) {
+            type = 'ignored';
+        } else {
+            type = self.typeSetter(err, item, stat) || typer(err, item, stat);
+        }
+
+        self.emit(type, err, item, stat);
+        self.emit('*', err, item, stat, type);
+
+        if ('dir' === type) {
+            fs.readdir(item, recurse);
+        } else if (list.length) {
+            self.statOne(list);
+        } else {
+            self.emit('done', self.count);
+        }
+    };
 };
 
 /**
@@ -132,6 +134,7 @@ Scan.prototype.absolutely = function(list) {
  * @return {string} Name of event/type. If falsey, typer() will be used.
  */
 Scan.prototype.typeSetter = function(err, item, stat) {
+    /*jshint unused:false */
     // stub for user-provided event category typer
 };
 
