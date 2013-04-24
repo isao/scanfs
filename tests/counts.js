@@ -80,3 +80,10 @@ test('counts same for scan.absolutely()', function (t) {
 
     scan.absolutely([from]);
 });
+
+test('statOne noop', function (t) {
+    t.plan(1);
+
+    var scan = new Scan(ignore);
+    t.same(scan.statOne([]), undefined);
+});
