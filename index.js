@@ -93,7 +93,7 @@ Scan.prototype.getStatCb = function(item, list) {
         return path.join(item, subitem);
     }
 
-    function recurse(err, sublist) {
+    function readdirCb(err, sublist) {
         process.nextTick(function() {
             self.statOne(list.concat(sublist.map(pathing)));
         });
@@ -114,7 +114,7 @@ Scan.prototype.getStatCb = function(item, list) {
         self.emit('*', err, item, stat, type);
 
         if ('dir' === type) {
-            fs.readdir(item, recurse);
+            fs.readdir(item, readdirCb);
 
         } else if (list.length) {
             self.statOne(list);
