@@ -11,18 +11,14 @@ test('done count equals files + dirs + ignored', function (t) {
     var scan = new Scan(ignore),
         items = 0;
 
-    scan.on('file', function (err, pathname, stat) {
+    function inc(err, pathname, stat) {
         items++;
-    });
+    }
 
-    scan.on('dir', function (err, pathname, stat) {
-        items++;
-    });
-
-    scan.on('ignored', function (err, pathname, stat) {
-        items++;
-    });
-
+    scan.on('dir', inc);
+    scan.on('file', inc);
+    scan.on('other', inc);
+    scan.on('ignored', inc);
     scan.on('done', function (count) {
         t.equal(count, items);
     });
@@ -30,35 +26,35 @@ test('done count equals files + dirs + ignored', function (t) {
     scan.relatively([from]);
 });
 
-test('ignore one works', function (t) {
+test('ignore one', function (t) {
     t.plan(1);
 
     var scan = new Scan('counts.js'),
-        files = 0;
+        ignored = 0;
 
-    scan.on('file', function (err, pathname, stat) {
-        files++;
+    scan.on('ignored', function (err, pathname, stat) {
+        ignored++;
     });
 
     scan.on('done', function (count) {
-        t.equal(files, count - 2);
+        t.equal(ignored, 1);
     });
 
     scan.relatively(__dirname);
 });
 
-test('ignore a couple works', function (t) {
+test('ignore two', function (t) {
     t.plan(1);
 
     var scan = new Scan(['counts.js', 'errors.js']),
-        files = 0;
+        ignored = 0;
 
-    scan.on('file', function (err, pathname, stat) {
-        files++;
+    scan.on('ignored', function (err, pathname, stat) {
+        ignored++;
     });
 
     scan.on('done', function (count) {
-        t.equal(files, count - 3);
+        t.equal(ignored, 2);
     });
 
     scan.relatively(__dirname);
@@ -79,11 +75,4 @@ test('counts same for scan.absolutely()', function (t) {
     });
 
     scan.absolutely([from]);
-});
-
-test('statOne noop', function (t) {
-    t.plan(1);
-
-    var scan = new Scan(ignore);
-    t.same(scan.statOne([]), undefined);
 });
