@@ -37,13 +37,14 @@ function arrayify(arg) {
 /**
  * @constructor
  * @param {array} ignore Array of strings or regexes for exclusion matching
+ * @param {function} fn Function that returns a event name string, or falsey
  * @events file, dir, other, ignored, *, error
  */
-function Scan(ignore, typer) {
+function Scan(ignore, fn) {
     this.count = 0;
     this.ignore = arrayify(ignore);
-    if ('function' === typeof typer) {
-        this.typer = typer;
+    if ('function' === typeof fn) {
+        this.typer = fn;
     }
 }
 
@@ -78,7 +79,7 @@ Scan.prototype.statOne = function(list) {
         this.count++;
         fs.stat(item, this.getStatCb(item, list));
     } else {
-    	this.emit('done', this.count);
+        this.emit('done', this.count);
     }
 };
 
