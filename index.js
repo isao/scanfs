@@ -39,9 +39,12 @@ function arrayify(arg) {
  * @param {array} ignore Array of strings or regexes for exclusion matching
  * @events file, dir, other, ignored, *, error
  */
-function Scan(ignore) {
+function Scan(ignore, typer) {
     this.count = 0;
     this.ignore = arrayify(ignore);
+    if ('function' === typeof typer) {
+        this.typer = typer;
+    }
 }
 
 Scan.prototype = Object.create(Stream.prototype);
@@ -104,7 +107,7 @@ Scan.prototype.getStatCb = function(item, list) {
         } else if (self.ignore.some(String.prototype.match.bind(item))) {
             type = 'ignored';
         } else {
-            type = self.typeSetter(err, item, stat) || typer(err, item, stat);
+            type = self.typer(err, item, stat) || typer(err, item, stat);
         }
 
         self.emit(type, err, item, stat);
@@ -112,8 +115,10 @@ Scan.prototype.getStatCb = function(item, list) {
 
         if ('dir' === type) {
             fs.readdir(item, recurse);
+
         } else if (list.length) {
             self.statOne(list);
+
         } else {
             self.emit('done', self.count);
         }
@@ -126,7 +131,7 @@ Scan.prototype.getStatCb = function(item, list) {
  * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
  * @return {string} Name of event/type. If falsey, typer() will be used.
  */
-Scan.prototype.typeSetter = function(err, item, stat) {
+Scan.prototype.typer = function(err, item, stat) {
     /*jshint unused:false */
     // stub for user-provided event category typer
 };
