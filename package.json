@@ -8,9 +8,10 @@
     "tap": "~0.4.1"
   },
   "scripts": {
+    "lint": "jshint *.js",
     "test": "node tests",
     "cover": "istanbul cover --dir artifacts/coverage tests",
-    "plato": "plato -d artifacts/plato index.js"
+    "plato": "plato -d artifacts/plato *.js"
   },
   "repository": {
     "type": "git",
