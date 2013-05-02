@@ -27,18 +27,11 @@ function typer(err, pathname, stat) {
     return type;
 }
 
-function arrayify(input) {
-    var arr;
-    if(undefined === input) {
-        arr = [];
-    } else if(('string' === typeof input) || (input instanceof RegExp)) {
-        arr = [input];
-    } else if(!(input instanceof Array)) {
-        throw new TypeError('arguments must be either strings or arrays');
-    } else {
-        arr = input.slice();
-    }
-    return arr;
+function arrayify(arg) {
+    return [].concat(arg).filter(function isDefined(item) {
+        /*jshint eqnull:true */
+        return item != null;
+    });
 }
 
 /**
