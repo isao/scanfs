@@ -77,6 +77,8 @@ Scan.prototype.statOne = function(list) {
     if (item) {
         this.count++;
         fs.stat(item, this.getStatCb(item, list));
+    } else {
+    	this.emit('done', this.count);
     }
 };
 
