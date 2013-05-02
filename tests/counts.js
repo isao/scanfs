@@ -19,7 +19,7 @@ test('done count equals files + dirs + ignored', function (t) {
     scan.on('file', inc);
     scan.on('other', inc);
     scan.on('ignored', inc);
-    scan.on('done', function (count) {
+    scan.on('done', function (err, count) {
         t.equal(count, items);
     });
 
@@ -36,7 +36,7 @@ test('ignore one', function (t) {
         ignored++;
     });
 
-    scan.on('done', function (count) {
+    scan.on('done', function (err, count) {
         t.equal(ignored, 1);
     });
 
@@ -53,7 +53,7 @@ test('ignore two', function (t) {
         ignored++;
     });
 
-    scan.on('done', function (count) {
+    scan.on('done', function (err, count) {
         t.equal(ignored, 2);
     });
 
@@ -70,7 +70,7 @@ test('counts same for scan.absolutely()', function (t) {
         count++;
     });
 
-    scan.on('done', function (done_count) {
+    scan.on('done', function (err, done_count) {
         t.equal(count, done_count);
     });
 

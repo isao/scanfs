@@ -26,7 +26,7 @@ test('scan.relatively() emits "done", does nothing else', function (t) {
         count++;
     });
 
-    scan.on('done', function (actual) {
+    scan.on('done', function (err, actual) {
         t.same(actual, 0);
         t.same(count, undefined);
     });
@@ -44,7 +44,7 @@ test('scan.relatively([]) emits "done", does nothing else', function (t) {
         count++;
     });
 
-    scan.on('done', function (actual) {
+    scan.on('done', function (err, actual) {
         t.same(actual, 0);
         t.same(count, undefined);
     });
@@ -63,7 +63,7 @@ test('statOne w/ empty array', function (t) {
         count++;
     });
 
-    scan.on('done', function (actual) {
+    scan.on('done', function (err, actual) {
         t.equal(actual, 0);
         t.same(count, undefined);
     });

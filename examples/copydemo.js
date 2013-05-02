@@ -26,7 +26,7 @@ scan.on('file', function (err, pathname, stat) {
 
 scan.on('error', console.error);
 
-scan.on('done', function (count) {
+scan.on('done', function (err, count) {
     console.log('done. %d things scanned. files copied to %s', count, to);
 });
 

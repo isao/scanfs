@@ -46,7 +46,8 @@ test('verify params', function (t) {
         t.true(stat.isDirectory(), 'it is dir');
     });
 
-    scan.on('done', function(count) {
+    scan.on('done', function(err, count) {
+        t.same(err, 0);
         t.same(typeof count, 'number');
         t.end();
     })

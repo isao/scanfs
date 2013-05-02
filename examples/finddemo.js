@@ -33,7 +33,7 @@ scan.on('file', function (err, pathname, stat) {
 scan.on('error', console.error);
 
 // results
-scan.on('done', function (count) {
+scan.on('done', function (err, count) {
     console.log('\nscanned %d things', count);
     console.log('found these js files:\n ', found.join('\n  '));
 });

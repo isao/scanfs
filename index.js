@@ -42,6 +42,7 @@ function arrayify(arg) {
  */
 function Scan(ignore, fn) {
     this.count = 0;
+    this.errors = 0;
     this.ignore = arrayify(ignore);
     if ('function' === typeof fn) {
         this.typer = fn;
@@ -79,7 +80,7 @@ Scan.prototype.statOne = function(list) {
         this.count++;
         fs.stat(item, this.getStatCb(item, list));
     } else {
-        this.emit('done', this.count);
+        this.emit('done', null, this.count);
     }
 };
 
@@ -107,6 +108,7 @@ Scan.prototype.getStatCb = function(item, list) {
 
         if (err) {
             type = 'error';
+            self.errors++;
         } else if (self.ignore.some(String.prototype.match.bind(item))) {
             type = 'ignored';
         } else {
@@ -123,7 +125,7 @@ Scan.prototype.getStatCb = function(item, list) {
             self.statOne(list);
 
         } else {
-            self.emit('done', self.count);
+            self.emit('done', self.errors, self.count);
         }
     };
 };

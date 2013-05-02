@@ -26,7 +26,7 @@ test('typer emit if basename contains an "i"', function(t) {
         has_i++;
     });
 
-    scan.on('done', function(total) {
+    scan.on('done', function(err, total) {
         t.equal(has_i, 2);
         t.equal(total, items);
     });
