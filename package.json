@@ -1,6 +1,6 @@
 {
   "name": "scanfs",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Walks filesystem breadth-first, emitting events on the way.",
   "main": "index.js",
   "dependencies": {},
