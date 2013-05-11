@@ -1,4 +1,4 @@
-var test = require('tape'),
+var test = require('tap').test,
     Scan = require('../');
 
 
@@ -16,46 +16,57 @@ test('bad path emits "error" event', function (t) {
     scan.relatively([' does not exist ']);
 });
 
-test('bad ignores throws', function(t) {
-
+test('scan.relatively() emits "done", does nothing else', function (t) {
     t.plan(2);
 
-    t.throws(function thrower() {
-        var scan = Scan(null);
+    var scan = new Scan(),
+        count;
+
+    scan.on('*', function(err, item, stat, type) {
+        count++;
     });
 
-    t.throws(function thrower() {
-        var scan = Scan({});
+    scan.on('done', function (err, actual) {
+        t.same(actual, 0);
+        t.same(count, undefined);
     });
 
+    scan.relatively();
 });
 
-test('generic thow tests', function (t) {
+test('scan.relatively([]) emits "done", does nothing else', function (t) {
     t.plan(2);
-    var expected = new Error("Uncaught, unspecified 'error' event.");
 
-    function thrower1() { throw expected; }
-    t.throws(thrower1, expected);
+    var scan = new Scan(),
+        count;
 
-    function thrower2() { throw new Error("Uncaught, unspecified 'error' event."); }
-    t.throws(thrower2, expected);
+    scan.on('*', function(err, item, stat, type) {
+        count++;
+    });
+
+    scan.on('done', function (err, actual) {
+        t.same(actual, 0);
+        t.same(count, undefined);
+    });
+
+    scan.relatively([]);
 });
 
-test('no "error" listener should throw', {skip:true}, function (t) {
-    t.plan(1);
-    function thrower() {
-        var scan = new Scan();
-        scan.relatively(['nonesuch']);
-    }
-    t.throws(thrower);
 
-    //
-    // not ok 6 should throw
-    //   ---
-    //     operator: throws
-    //     expected:
-    //     actual:
-    //     at: EventEmitter._cb (/Users/isao/Repos/proj/scanfs/tests/error-test.js:57:7)
-    //   ...
-    //
+test('statOne w/ empty array', function (t) {
+    t.plan(2);
+
+    var scan = new Scan(),
+        count;
+
+    scan.on('*', function(err, item, stat, type) {
+        count++;
+    });
+
+    scan.on('done', function (err, actual) {
+        t.equal(actual, 0);
+        t.same(count, undefined);
+    });
+
+    scan.statOne([]);
 });

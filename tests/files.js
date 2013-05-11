@@ -1,5 +1,5 @@
 var path = require('path'),
-    test = require('tape'),
+    test = require('tap').test,
     Scan = require('../'),
     ignore = [/node_modules/, /\.git/],
     from = path.dirname(__dirname);
@@ -21,6 +21,7 @@ test('verify params', function (t) {
     var scan = new Scan(ignore);
 
     scan.on('*', function (err, pathname, stat, type) {
+        t.same(err, null);
         t.same(typeof pathname, 'string');
         t.same(typeof stat, 'object');
         t.same(typeof type, 'string');
@@ -28,26 +29,27 @@ test('verify params', function (t) {
     });
 
     scan.on('file', function (err, pathname, stat) {
+        t.same(err, null);
         t.same(typeof pathname, 'string');
         t.same(typeof stat, 'object');
-        t.same(err, null);
         t.same(typeof stat.constructor, 'function');
         t.true(stat.isFile(), 'it is file');
         t.false(stat.isDirectory(), 'it is not dir');
     });
 
     scan.on('dir', function (err, pathname, stat) {
+        t.same(err, null);
         t.same(typeof pathname, 'string');
         t.same(typeof stat, 'object');
-        t.same(err, null);
         t.same(typeof stat.constructor, 'function');
         t.false(stat.isFile(), 'it is not a file');
         t.true(stat.isDirectory(), 'it is dir');
     });
-    
-    scan.on('done', function(count) {
+
+    scan.on('done', function(err, count) {
+        t.same(err, 0);
         t.same(typeof count, 'number');
-    	t.end();
+        t.end();
     })
 
     scan.relatively(__dirname);
