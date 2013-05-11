@@ -11,6 +11,10 @@ usage
 -----
 See [`./examples/`](./examples/).
 
+limitations
+-----------
+Uses `fs.stat()` so symlinks are not distinguished and cycles are not detected.
+
 test
 ----
     npm test
