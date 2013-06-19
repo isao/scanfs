@@ -97,37 +97,49 @@ Scan.prototype.getStatCb = function(item, list) {
         return path.join(item, subitem);
     }
 
-    function readdirCb(err, sublist) {
-        process.nextTick(function() {
-            self.statOne(list.concat(sublist.map(pathing)));
+    function recurse(err, arr) {
+        if (err) {
+            self.emit('error', err);
+            self.errors++;
+        }
+
+        process.nextTick(function nextStat() {
+            self.statOne(arr ? list.concat(arr.map(pathing)) : list);
         });
     }
 
-    return function statCb(err, stat) {
+    function statCb(err, stat) {
         var type;
 
+        // assign an event type
         if (err) {
             type = 'error';
             self.errors++;
-        } else if (self.ignore.some(String.prototype.match.bind(item))) {
+
+        } else if (self.ignore.some(''.match.bind(item))) {
             type = 'ignored';
+
         } else {
             type = self.typer(err, item, stat) || typer(err, item, stat);
         }
 
+        // emit events
         self.emit(type, err, item, stat);
         self.emit('*', err, item, stat, type);
 
+        // carry on
         if ('dir' === type) {
-            fs.readdir(item, readdirCb);
+            fs.readdir(item, recurse);
 
         } else if (list.length) {
-            self.statOne(list);
+            recurse();
 
         } else {
             self.emit('done', self.errors, self.count);
         }
-    };
+    }
+
+    return statCb;
 };
 
 /**
