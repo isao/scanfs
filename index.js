@@ -35,6 +35,18 @@ function arrayify(arg) {
 }
 
 /**
+ * Close a string over a str.match, because str.match can't be used as a
+ * functor, and using String.prototype.match.bind(str) is expensive.
+ * @param {string} string to match
+ * @return {function} for use as argument to ignore.some()
+ */
+function match(str) {
+    return function(re) {
+        return str.match(re);
+    }
+}
+
+/**
  * @constructor
  * @param {array} ignore Array of strings or regexes for exclusion matching
  * @param {function} fn Function that returns a event name string, or falsey
@@ -116,7 +128,7 @@ Scan.prototype.getStatCb = function(item, list) {
             type = 'error';
             self.errors++;
 
-        } else if (self.ignore.some(''.match.bind(item))) {
+        } else if (self.ignore.some(match(item))) {
             type = 'ignored';
 
         } else {
