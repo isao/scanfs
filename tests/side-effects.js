@@ -1,6 +1,6 @@
 var path = require('path'),
     test = require('tap').test,
-    Scan = require('../');
+    Scan = require('../scan');
 
 
 test('array passed to relatively/absolutely is NOT modified', function(t) {

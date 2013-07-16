@@ -1,5 +1,5 @@
 var test = require('tap').test,
-    Scan = require('../');
+    Scan = require('../scan');
 
 
 test('bad path emits "error" event', function (t) {

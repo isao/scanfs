@@ -1,5 +1,5 @@
 var test = require('tap').test,
-    Scan = require('../');
+    Scan = require('../scan');
 
 
 test('/dev/null emits "other" and isCharacterDevice()', function(t) {

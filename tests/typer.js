@@ -1,7 +1,7 @@
 var test = require('tap').test,
     path = require('path'),
 
-    Scan = require('../'),
+    Scan = require('../scan'),
     balls = path.resolve(__dirname, 'fixtures', 'balls');
 
 

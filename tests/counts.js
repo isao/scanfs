@@ -1,6 +1,6 @@
 var path = require('path'),
     test = require('tap').test,
-    Scan = require('../'),
+    Scan = require('../scan'),
     ignore = [/node_modules/, /\.git/],
     from = path.dirname(__dirname);
 

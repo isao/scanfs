@@ -7,8 +7,24 @@ install
 -------
     npm i --save scanfs
 
+example
+-------
+
+Print out all the files:
+
+    var Scan = require('scanfs'),
+        scan = new Scan();
+
+    scan.on('file', function onfile(err, pathname, stat) {
+        console.log(pathname);
+    });
+
+    scan.relatively(['./this', './that']);
+    
+
 usage
 -----
+
 See [`./examples/`](./examples/).
 
 limitations
