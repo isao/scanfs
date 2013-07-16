@@ -47,7 +47,7 @@ test('verify params', function (t) {
     });
 
     scan.on('done', function(err, count) {
-        t.same(err, 0);
+        t.same(err, null);
         t.same(typeof count, 'number');
         t.end();
     })

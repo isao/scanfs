@@ -54,7 +54,6 @@ function match(str) {
  */
 function Scan(ignore, fn) {
     this.count = 0;
-    this.errors = 0;
     this.ignore = arrayify(ignore);
     if ('function' === typeof fn) {
         this.typer = fn;
@@ -112,7 +111,6 @@ Scan.prototype.getStatCb = function(item, list) {
     function recurse(err, arr) {
         if (err) {
             self.emit('error', err);
-            self.errors++;
         }
 
         process.nextTick(function nextStat() {
@@ -126,7 +124,6 @@ Scan.prototype.getStatCb = function(item, list) {
         // assign an event type
         if (err) {
             type = 'error';
-            self.errors++;
 
         } else if (self.ignore.some(match(item))) {
             type = 'ignored';
@@ -147,7 +144,7 @@ Scan.prototype.getStatCb = function(item, list) {
             recurse();
 
         } else {
-            self.emit('done', self.errors, self.count);
+            self.emit('done', null, self.count);
         }
     }
 
