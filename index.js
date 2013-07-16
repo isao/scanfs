@@ -125,7 +125,7 @@ Scan.prototype.getStatCb = function(item, list) {
         if (err) {
             type = 'error';
 
-        } else if (self.ignore.some(match(item))) {
+        } else if (self.ignore.length && self.ignore.some(match(item))) {
             type = 'ignored';
 
         } else {
