@@ -68,5 +68,5 @@ test('statOne w/ empty array', function (t) {
         t.same(count, undefined);
     });
 
-    scan.statOne([]);
+    scan.stat([]);
 });

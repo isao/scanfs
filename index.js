@@ -10,13 +10,8 @@ var fs = require('fs'),
     Stream = require('stream');
 
 
-/**
- * Set the type of event to fire
- * @param {object} err fs.stat() Error object, or null
- * @param {object} stat fs.Stats obj, see `man 2 stat` http://bit.ly/Sb0KRd
- * @param {string} item pathname of file, directory, socket, fifo, etc.
- * @return {string} name of event to emit
- */
+// helper functions
+
 function typer(err, pathname, stat) {
     var type = 'other';
     if (stat.isFile()) {
@@ -27,32 +22,35 @@ function typer(err, pathname, stat) {
     return type;
 }
 
-function arrayify(arg) {
-    return [].concat(arg).filter(function isDefined(item) {
-        /*jshint eqnull:true */
-        return item != null;
-    });
-}
-
-/**
- * Close a string over a str.match, because str.match can't be used as a
- * functor, and using String.prototype.match.bind(str) is expensive.
- * @param {string} string to match
- * @return {function} for use as argument to ignore.some()
- */
 function match(str) {
-    return function(re) {
-        return str.match(re);
-    }
+    return function(re) { return str.match(re); };
 }
 
+function prefix(left) {
+    return function(right) { return left + right; };
+}
+
+function resolve(pathname) {
+    return path.resolve(pathname);
+}
+
+function isDefined(item) {
+    /*jshint eqnull:true */
+    return item != null;
+}
+
+function arrayify(arg) {
+    return [].concat(arg).filter(isDefined);
+}
+
+
 /**
- * @constructor
+ * @extends EventEmitter
  * @param {array} ignore Array of strings or regexes for exclusion matching
  * @param {function} fn Function that returns a event name string, or falsey
- * @events file, dir, other, ignored, *, error
+ * @events 'file', 'dir', 'other', 'ignored', '*', 'error', 'done'; or custom
  */
-function Scan(ignore, fn) {
+function Scan(ignore, fn) { // todo make "new" optional
     this.count = 0;
     this.ignore = arrayify(ignore);
     if ('function' === typeof fn) {
@@ -67,7 +65,7 @@ Scan.prototype = Object.create(Stream.prototype);
  * Pathnames emitted are relative to the pathnames in the list.
  */
 Scan.prototype.relatively = function(list) {
-    this.statOne(arrayify(list));
+    this.stat(arrayify(list));
 };
 
 /**
@@ -75,91 +73,68 @@ Scan.prototype.relatively = function(list) {
  * Pathnames emitted are absolute.
  */
 Scan.prototype.absolutely = function(list) {
-    function resolve(pathname) {
-        return path.resolve(pathname); // pass only 1st arg of map to resolve()
-    }
-    this.statOne(arrayify(list).map(resolve));
-};
-
-/**
- * @param {array} list Items remaining to fs.stat().
- * @param {object} self This instance object.
- */
-Scan.prototype.statOne = function(list) {
-    var item = list.shift();
-    if (item) {
-        this.count++;
-        fs.stat(item, this.getStatCb(item, list));
-    } else {
-        this.emit('done', null, this.count);
-    }
-};
-
-/**
- * @param {string} item File system path.
- * @param {array} list Items remaining to fs.stat().
- * @param {object} self This instance object.
- * @return {function} Closure for fs.stat() callback.
- */
-Scan.prototype.getStatCb = function(item, list) {
-    var self = this;
-
-    function pathing(subitem) {
-        return path.join(item, subitem);
-    }
-
-    function recurse(err, arr) {
-        if (err) {
-            self.emit('error', err);
-        }
-
-        process.nextTick(function nextStat() {
-            self.statOne(arr ? list.concat(arr.map(pathing)) : list);
-        });
-    }
-
-    function statCb(err, stat) {
-        var type;
-
-        // assign an event type
-        if (err) {
-            type = 'error';
-
-        } else if (self.ignore.length && self.ignore.some(match(item))) {
-            type = 'ignored';
-
-        } else {
-            type = self.typer(err, item, stat) || typer(err, item, stat);
-        }
-
-        // emit events
-        self.emit(type, err, item, stat);
-        self.emit('*', err, item, stat, type);
-
-        // carry on
-        if ('dir' === type) {
-            fs.readdir(item, recurse);
-
-        } else if (list.length) {
-            recurse();
-
-        } else {
-            self.emit('done', null, self.count);
-        }
-    }
-
-    return statCb;
+    this.stat(arrayify(list).map(resolve));
 };
 
 /**
  * @param {object|null} err fs.stat() Error object, or null
  * @param {string} item Pathname
- * @param {object} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
- * @return {string} Name of event/type. If falsey, typer() will be used.
+ * @param {fs.Stats} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
+ * @return {string} type of event to emit. If falsey, typer() will be used.
  */
 Scan.prototype.typer = function(err, item, stat) {
-    /*jshint unused:false */
-    // stub for user-provided event category typer
+    /*jshint unused:false *//* stub for user-provided event typer */
+};
+
+/**
+ * @param {Error|null} err fs.stat error
+ * @param {string} item pathname of filesystem item
+ * @param {fs.Stats} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
+ * @return {string} type of event to emit
+ */
+Scan.prototype.getType = function(err, item, stat) {
+    var type;
+    if (err) {
+        type = 'error';
+    } else if (this.ignore.length && this.ignore.some(match(item))) {
+        type = 'ignored';
+    } else {
+        type = this.typer(err, item, stat) || typer(err, item, stat);
+    }
+    return type;
+};
+
+/**
+ * @param {array} list Queue of pathnames to fs.stat().
+ */
+Scan.prototype.stat = function(list) {
+    var self = this,
+        item = list.shift();
+
+    function readdirCb(err, arr) {
+        self.stat(list.concat(arr.map(prefix(item + path.sep))));
+    }
+
+    function statCb(err, stat) {
+        var type = self.getType(err, item, stat);
+        self.emit(type, err, item, stat);
+        self.emit('*', err, item, stat, type);
+
+        if ('dir' === type) {
+            fs.readdir(item, readdirCb);
+        } else if (list.length) {
+            self.stat(list);
+        } else {
+            self.emit('done', null, self.count);
+        }
+    }
+
+    if (item) {
+        this.count++;
+        fs.stat(item, statCb);
+    } else {
+        this.emit('done', null, this.count);
+    }
 };
 
 module.exports = Scan;
