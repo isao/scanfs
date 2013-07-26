@@ -10,7 +10,7 @@ var fs = require('fs'),
     Stream = require('stream');
 
 
-// helper functions
+// helper functions //
 
 function typer(err, pathname, stat) {
     var type = 'other';
@@ -61,19 +61,17 @@ function Scan(ignore, fn) { // todo make "new" optional
 Scan.prototype = Object.create(Stream.prototype);
 
 /**
- * @param {array} list Paths to begin walking. Events emitted for every item.
- * Pathnames emitted are relative to the pathnames in the list.
+ * @param {array} queue Pathname(s) to scan.
  */
-Scan.prototype.relatively = function(list) {
-    this.stat(arrayify(list));
+Scan.prototype.relatively = function(queue) {
+    this.stat(arrayify(queue));
 };
 
 /**
- * @param {array} list Paths to begin walking. Events emitted for every item.
- * Pathnames emitted are absolute.
+ * @param {array} queue Pathname(s) to covert to absolute, then scan.
  */
-Scan.prototype.absolutely = function(list) {
-    this.stat(arrayify(list).map(resolve));
+Scan.prototype.absolutely = function(queue) {
+    this.stat(arrayify(queue).map(resolve));
 };
 
 /**
@@ -105,14 +103,14 @@ Scan.prototype.getType = function(err, item, stat) {
 };
 
 /**
- * @param {array} list Queue of pathnames to fs.stat().
+ * @param {array} queue Queue of pathnames to fs.stat().
  */
-Scan.prototype.stat = function(list) {
+Scan.prototype.stat = function(queue) {
     var self = this,
-        item = list.shift();
+        item = queue.shift();
 
     function readdirCb(err, arr) {
-        self.stat(list.concat(arr.map(prefix(item + path.sep))));
+        self.stat(queue.concat(arr.map(prefix(item + path.sep))));
     }
 
     function statCb(err, stat) {
@@ -122,8 +120,8 @@ Scan.prototype.stat = function(list) {
 
         if ('dir' === type) {
             fs.readdir(item, readdirCb);
-        } else if (list.length) {
-            self.stat(list);
+        } else if (queue.length) {
+            self.stat(queue);
         } else {
             self.emit('done', null, self.count);
         }
