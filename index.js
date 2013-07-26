@@ -47,14 +47,18 @@ function arrayify(arg) {
 /**
  * @extends EventEmitter
  * @param {array} ignore Array of strings or regexes for exclusion matching
- * @param {function} fn Function that returns a event name string, or falsey
- * @events 'file', 'dir', 'other', 'ignored', '*', 'error', 'done'; or custom
+ * @param {function} typer Function that returns a event name string, or falsey
+ * @events 'file', 'dir', 'other', 'ignored', '*', 'error', 'done'; or whatever
+ * may be returned by typer()
  */
-function Scan(ignore, fn) { // todo make "new" optional
+function Scan(ignore, typer) {
+    if (!(this instanceof Scan)) {
+        return new Scan(ignore, typer);
+    }
     this.count = 0;
     this.ignore = arrayify(ignore);
-    if ('function' === typeof fn) {
-        this.typer = fn;
+    if ('function' === typeof typer) {
+        this.typer = typer;
     }
 }
 
