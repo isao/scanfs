@@ -15,7 +15,6 @@
     //"white": false,      // Check against strict whitespace and indentation rules
 
     // relaxing, over defaults
-    "es5": true,        // Allow ES5 syntax (ex: getters and setters)
     "globalstrict": true, // Allow global "use strict" (also enables 'strict')
 
     // env
