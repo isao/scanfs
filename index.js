@@ -107,6 +107,16 @@ Scan.prototype.getType = function(err, item, stat) {
 };
 
 /**
+ * Stub for short-circuiting recusion based on the contents of a directory.
+ * @param {string} dir Parent directory of the prospective items to enqueue
+ * @param {array} contents Array of strings of the basename contents of dir
+ * @return {array|null}
+ */
+Scan.prototype.beforeEnqueue = function(dir, contents) {
+    /*jshint unused:false */
+}
+
+/**
  * @param {array} queue Queue of pathnames to fs.stat().
  */
 Scan.prototype.stat = function(queue) {
@@ -114,7 +124,8 @@ Scan.prototype.stat = function(queue) {
         item = queue.shift();
 
     function readdirCb(err, arr) {
-        self.stat(queue.concat(arr.map(prefix(item + path.sep))));
+        var enqueue = self.beforeEnqueue(item, arr) || arr;
+        self.stat(queue.concat(enqueue.map(prefix(item + path.sep))));
     }
 
     function statCb(err, stat) {
