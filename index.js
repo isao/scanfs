@@ -45,15 +45,15 @@ function arrayify(arg) {
 
 
 /**
- * @extends EventEmitter
+ * @extends Stream
  * @param {array} ignore Array of strings or regexes for exclusion matching
  * @param {function} typer Function that returns a event name string, or falsey
  * @events 'file', 'dir', 'other', 'ignored', '*', 'error', 'done'; or whatever
- * may be returned by typer()
+ * may be returned by (this.typer() || typer()).
  */
 function Scan(ignore, typer) {
     if (!(this instanceof Scan)) {
-        return new Scan(ignore, typer);
+        return new Scan(ignore, typer); // instantiate without "new"
     }
     this.count = 0;
     this.ignore = arrayify(ignore);
@@ -119,6 +119,7 @@ Scan.prototype.stat = function(queue) {
 
     function statCb(err, stat) {
         var type = self.getType(err, item, stat);
+
         self.emit(type, err, item, stat);
         self.emit('*', err, item, stat, type);
 
