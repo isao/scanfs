@@ -12,7 +12,7 @@ var fs = require('fs'),
 
 // helper functions //
 
-function typer(err, pathname, stat) {
+function typer(pathname, stat) {
     var type = 'other';
     if (stat.isFile()) {
         type = 'file';
@@ -79,12 +79,11 @@ Scan.prototype.absolutely = function(queue) {
 };
 
 /**
- * @param {object|null} err fs.stat() Error object, or null
  * @param {string} item Pathname
  * @param {fs.Stats} stat fs.Stats object, see `man 2 stat`, http://bit.ly/Sb0KRd
  * @return {string} type of event to emit. If falsey, typer() will be used.
  */
-Scan.prototype.typer = function(err, item, stat) {
+Scan.prototype.typer = function(item, stat) {
     /*jshint unused:false *//* stub for user-provided event typer */
 };
 
@@ -101,7 +100,7 @@ Scan.prototype.getType = function(err, item, stat) {
     } else if (this.ignore.length && this.ignore.some(match(item))) {
         type = 'ignored';
     } else {
-        type = this.typer(err, item, stat) || typer(err, item, stat);
+        type = this.typer(item, stat) || typer(item, stat);
     }
     return type;
 };
