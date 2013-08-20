@@ -10,8 +10,8 @@ test('typer emit if basename contains an "i"', function(t) {
         items = 0,
         has_i = 0;
 
-    function hasAnI(err, item, stat) {
-        if (!err && stat.isFile()) {
+    function hasAnI(item, stat) {
+        if (stat.isFile()) {
             return (path.basename(item).indexOf('i') !== -1) && 'has_i';
         }
     }
