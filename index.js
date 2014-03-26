@@ -108,7 +108,7 @@ Scan.prototype.getType = function(err, item, stat) {
  */
 Scan.prototype.beforeEnqueue = function(dir, contents) {
     /*jshint unused:false */
-}
+};
 
 /**
  * @param {array} queue Queue of pathnames to fs.stat().

@@ -83,7 +83,7 @@ Emitted for items whose pathnames to ignore, as matched by a string or regex pas
 
 A wildcard event, emitted for every event type except `done`.
 
-* `err` always null
+* `err` null, or the Error object returned by fs.stat()
 * `pathname` string path of file
 * `stat` fs.Stats object of file
 * `type` string event name
