@@ -3,21 +3,18 @@
 // find all *.js files in dir(s) passed as command line args
 
 var ignore = ['node_modules', /\/.(git|svn)/],
-    found = [],
-
     Scan = require('../'),
-    scan = new Scan(ignore),
+    scan = new Scan(ignore, isJs),
+    dirs = process.argv.length > 2 ? process.argv.slice(2) : ['.'],
+    found = [];
 
-    args = process.argv.slice(2),
-    dirs = args.length ? args : ['.'];
 
-
-// add a custom event
-scan.typer = function (err, pathname, stat) {
-    if (pathname.match(/\.js$/)) {
-        return 'javascript!';
-    }
-};
+// add a custom event type that checks for files ending in ".js"
+function isJs(pathname, stat) {
+    // return the event name you want as a string. if the return value
+    // is falsey, then the default typer function is used
+    if (pathname.match(/\.js$/)) return 'javascript!';
+}
 
 // listen for it
 scan.on('javascript!', function (err, pathname, stat) {
