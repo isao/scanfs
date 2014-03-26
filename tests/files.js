@@ -1,5 +1,5 @@
 var path = require('path'),
-    test = require('tap').test,
+    test = require('tape'),
     Scan = require('../'),
     ignore = [/node_modules/, /\.git/],
     from = path.dirname(__dirname);
@@ -10,7 +10,7 @@ test('find package.json', function (t) {
 
     scan.on('file', function (err, pathname, stat) {
         if (pathname.match('package.json')) {
-            t.equal('Isao Yagi <isao@yahoo-inc.com>', require(pathname).author);
+            t.ok(require(pathname).author.match(/^Isao Yagi/));
         }
     });
 

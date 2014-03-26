@@ -1,11 +1,11 @@
 {
   "name": "scanfs",
-  "version": "0.1.1",
-  "description": "Walks filesystem breadth-first, emitting events on the way.",
+  "version": "1.0.0",
+  "description": "A small library that does a breadth-first walk of the filesystem, and emits (customizable) events on the way.",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
-    "tap": "~0.4.1"
+    "tape": "~2.1.0"
   },
   "scripts": {
     "lint": "jshint *.js*",
@@ -17,10 +17,11 @@
     "type": "git",
     "url": "git://github.com/isao/scanfs.git"
   },
-  "author": "Isao Yagi <isao@yahoo-inc.com>",
+  "author": "Isao Yagi <isao.yagi@gmail.com>",
   "license": "MIT",
   "keywords": [
     "filesystem",
+    "directory",
     "walk",
     "find",
     "traverse"
