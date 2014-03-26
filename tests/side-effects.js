@@ -1,5 +1,5 @@
 var path = require('path'),
-    test = require('tap').test,
+    test = require('tape'),
     Scan = require('../');
 
 

@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
-    "tap": "~0.4.1"
+    "tape": "~2.1.0"
   },
   "scripts": {
     "lint": "jshint *.js*",
