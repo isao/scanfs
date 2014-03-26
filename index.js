@@ -7,7 +7,7 @@
 
 var fs = require('fs'),
     path = require('path'),
-    Stream = require('stream');
+    EventEmitter = require('events').EventEmitter;
 
 
 // helper functions //
@@ -45,7 +45,7 @@ function arrayify(arg) {
 
 
 /**
- * @extends Stream
+ * @extends EventEmitter
  * @param {array} ignore Array of strings or regexes for exclusion matching
  * @param {function} typer Function that returns a event name string, or falsey
  * @events 'file', 'dir', 'other', 'ignored', '*', 'error', 'done'; or whatever
@@ -62,7 +62,7 @@ function Scan(ignore, typer) {
     }
 }
 
-Scan.prototype = Object.create(Stream.prototype);
+Scan.prototype = Object.create(EventEmitter.prototype);
 
 /**
  * @param {array} queue Pathname(s) to scan.
