@@ -11,33 +11,92 @@ install
 example
 -------
 
-Display the last modification dates of every file from the current working directory, excluding 'node_modules', and '.git':
+A minimal example that counts all files and directories from current working directory:
 
-    var ignore = [/^node_modules$/, '.git'],
-        Scan = require('scanfs'),
-        scan = new Scan(ignore);
+    var Scanfs = require('scanfs');
 
-    scan.on('file', function(err, pathname, stat) {
-        console.log('%s, was modified on %s', pathname, stat.mtime);
-    });
+    // 'done' event handler
+    function showCount(err, count) {
+        console.log(count, 'items processed.');
+    }
+
+    Scanfs()
+        .on('error', console.error)
+        .on('done', showCount)
+        .relatively('.'); // begin scan, returned paths are relative
+
+Another longer example to 1) log the file size of all JSON files, 2) log the modification dates of every directory, and 3) ignore 'node_modules', and '.git' directories.
+
+    var Scanfs = require('scanfs');
+
+    // add a 'json' custom event to override 'file' event for .json files
+    function jsonType(pathname, stat) {
+        if (stat.isFile() && pathname.match(/\.json$/)) return 'json';
+    }
+
+    // 'json' event handler to log file size
+    function showSize(err, pathname, stat) {
+        console.log(pathname, 'is', stat.size, 'bytes');
+    }
+
+    // 'dir' event handler to log the modification date
+    function showMtime(err, pathname, stat) {
+        console.log(pathname, 'was modified on', stat.mtime);
+    }
+
+    // 'done' handler
+    function showCount(err, count) {
+        console.log('done!', count, 'items processed.');
+    }
+
+    // instantiate with ignore patterns, and a custom event function
+    Scanfs([/node_modules$/, '.git'], jsonType)
+        .on('json', showSize)
+        .on('dir', showMtime)
+        .on('error', console.error)
+        .relatively('.'); // begin scan, returned paths are relative
+
+The "new" operator works too:
+
+    var scan = new Scanfs();
+
+    scan.on([/node_modules$/, '.git'], jsonType)
+        .on('json', showSize)
+        .on('dir', showMtime)
+        .on('error', console.error);
 
     scan.relatively('.');
-
-You can also skip the "new" operator:
-
-    var scan = require('scanfs')(ignore, myTyperFn);
 
 Also see [`./examples/`](./examples/).
 
 methods
 -------
 
-### class Scan(ignored, typerFn)
+Scanfs extends node's [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter), so all of it's methods are also available.
 
-Parameters:
+### Class Scan(ignore, typerFn)
 
-* `ignored` _optional_ string, regex, or array of strings and/or regexs. The strings or regexes, if matched against the item pathname, cause the `ignored` event to get fired (instead of "file", "dir", etc.).
-* `typerFn` _optional_ function for customizing events. See **customizing events** below.
+Returns a scanfs instance. Using `new` is optional. Parameters:
+
+* `ignore` _optional_ string, regex, or array of strings and/or regexes. The strings or regexes, if matched against the item pathname, cause the `ignored` event to get fired (instead of "file", "dir", etc.).
+* `typerFn` _optional_ function for customizing events. See **custom events** below.
+
+### scan.on(eventName, callback)
+
+Attach listener callback to an event. Chainable. See **events** below.
+
+### scan.relatively(paths)
+
+Start scanning. Pathnames emitted to listeners are relative to the current working directory if the path arguments are also relative to the current working directory. If the path parameter(s) are absolute, then the pathnames emittted will also be absolute.
+
+* `paths` string or array of strings, pathnames to scan recursively.
+
+### scan.absolutely(paths)
+
+Start scanning. Pathnames are converted to absolute with `path.resolve`.
+
+* `paths` string or array of strings, pathnames to scan recursively.
+
 
 events
 ------
@@ -100,8 +159,8 @@ custom events
 
 You can assign a custom event categorization function to `Scan.typer`, or pass it as the second parameter to the constructor. The function is called for every non-error filesystem item, with the following two parameters:
 
-    * `pathname` a string pathname of the item scanned
-    * `stat` an `fs.Stats` object for the item scanned (see <http://bit.ly/Sb0KRd> or `man 2 stat`)
+* `pathname` a string pathname of the item scanned
+* `stat` an `fs.Stats` object for the item scanned (see <http://bit.ly/Sb0KRd> or `man 2 stat`)
 
 If the function returns a falsey value, then the default event is emitted. Otherwise, the return value is used as the event name.
 
