@@ -118,8 +118,13 @@ Scan.prototype.stat = function(queue) {
         item = queue.shift();
 
     function readdirCb(err, arr) {
-        var enqueue = self.beforeEnqueue(item, arr) || arr;
-        self.stat(queue.concat(enqueue.map(prefix(item + path.sep))));
+        var enqueue;
+        if (err) { // i.e. EACCES
+            self.emit('error', err, item);
+        } else {
+            enqueue = self.beforeEnqueue(item, arr) || arr;
+            self.stat(queue.concat(enqueue.map(prefix(item + path.sep))));
+        }
     }
 
     function statCb(err, stat) {
