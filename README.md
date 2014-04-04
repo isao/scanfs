@@ -11,21 +11,21 @@ install
 example
 -------
 
-A minimal example that counts all files and directories from current working directory:
+A example showing syntax (callback and handler functions not shown):
 
-    var Scanfs = require('scanfs');
+    // instantiate with ignore patterns and a custom event function
+    var Scanfs = require('scanfs'),
+        scan = new Scanfs([/\/node_modules$/, '.git'], customEvents);
 
-    // 'done' event handler
-    function showCount(err, count) {
-        console.log(count, 'items processed.');
-    }
+    // attach listeners/event handlers
+    scan.on('json', handleJsonFiles)
+        .on('dir', handleDirectories)
+        .on('error', console.error);
 
-    Scanfs()
-        .on('error', console.error)
-        .on('done', showCount)
-        .relatively('.'); // begin scan, returned paths are relative
+    // begin scan, convert emitted pathnames to absolute
+    scan.absolutely([pathA, pathB]);
 
-Another longer example to 1) log the file size of all JSON files, 2) log the modification dates of every directory, and 3) ignore 'node_modules', and '.git' directories.
+A functional example including handlers. This 1) outputs the file size of all JSON files, 2) outputs the modification dates of every directory, and 3) ignores 'node_modules', and '.git' directories. Note the `new` operator is optional, and is not used here.
 
     var Scanfs = require('scanfs');
 
@@ -50,22 +50,11 @@ Another longer example to 1) log the file size of all JSON files, 2) log the mod
     }
 
     // instantiate with ignore patterns, and a custom event function
-    Scanfs([/node_modules$/, '.git'], jsonType)
+    Scanfs([/\/node_modules$/, '.git'], jsonType)
         .on('json', showSize)
         .on('dir', showMtime)
         .on('error', console.error)
         .relatively('.'); // begin scan, returned paths are relative
-
-The "new" operator works too:
-
-    var scan = new Scanfs();
-
-    scan.on([/node_modules$/, '.git'], jsonType)
-        .on('json', showSize)
-        .on('dir', showMtime)
-        .on('error', console.error);
-
-    scan.relatively('.');
 
 Also see [`./examples/`](./examples/).
 
@@ -78,7 +67,7 @@ Scanfs extends node's [EventEmitter](http://nodejs.org/api/events.html#events_cl
 
 Returns a scanfs instance. Using `new` is optional. Parameters:
 
-* `ignore` _optional_ string, regex, or array of strings and/or regexes. The strings or regexes, if matched against the item pathname, cause the `ignored` event to get fired (instead of "file", "dir", etc.).
+* `ignore` _optional_ string, regex, or array of strings and/or regexes. The strings or regexes, if matched against the item pathname, cause the `ignored` event to get fired (instead of `file`, `dir`, etc.).
 * `typerFn` _optional_ function for customizing events. See **custom events** below.
 
 ### scan.on(eventName, callback)
@@ -96,7 +85,6 @@ Start scanning. Pathnames emitted to listeners are relative to the current worki
 Start scanning. Pathnames are converted to absolute with `path.resolve`.
 
 * `paths` string or array of strings, pathnames to scan recursively.
-
 
 events
 ------
@@ -157,12 +145,12 @@ Signals file system scanning is complete.
 custom events
 -------------
 
-You can assign a custom event categorization function to `Scan.typer`, or pass it as the second parameter to the constructor. The function is called for every non-error filesystem item, with the following two parameters:
+You can assign a custom event categorization function to `Scan.typer`, or pass it as the second parameter to the constructor. The categorization function is called for every non-error filesystem item, with the following two parameters:
 
 * `pathname` a string pathname of the item scanned
-* `stat` an `fs.Stats` object for the item scanned (see <http://bit.ly/Sb0KRd> or `man 2 stat`)
+* `stat` an `fs.Stats` object for the item scanned (see <http://bit.ly/Sb0KRd> or `man 2 stat` for more information about stat's properties)
 
-If the function returns a falsey value, then the default event is emitted. Otherwise, the return value is used as the event name.
+If the categorization function returns a falsey value, then the default event is emitted. Otherwise, the return value is used as the event name.
 
 Note that if the original event name was changed from `dir` to something else, then `scanfs` will not scan the associated directory.
 
