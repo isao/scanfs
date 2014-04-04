@@ -1,7 +1,7 @@
 {
   "name": "scanfs",
   "version": "1.0.0",
-  "description": "A small library that does a breadth-first walk of the filesystem, and emits (customizable) events on the way.",
+  "description": "A small library that does a breadth-first walk of the file system, and emits (customizable) events on the way.",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
@@ -21,9 +21,11 @@
   "license": "MIT",
   "keywords": [
     "filesystem",
+    "descend",
     "directory",
     "walk",
     "find",
+    "recursive",
     "traverse"
   ]
 }
