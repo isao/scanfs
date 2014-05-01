@@ -25,9 +25,3 @@ test('array passed to constructor is NOT modified', function(t) {
     t.equal(dirs.length, 1);
     t.same(ignore, ['abc', 'def']);
 });
-
-test('Scan can be instantiated without "new"', function(t) {
-	t.plan(2);
-	t.ok(Scan() instanceof Scan);
-	t.ok(require('../')() instanceof Scan);
-});
