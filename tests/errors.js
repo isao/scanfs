@@ -52,7 +52,6 @@ test('scan.relatively([]) emits "done", does nothing else', function (t) {
     scan.relatively([]);
 });
 
-
 test('statOne w/ empty array', function (t) {
     t.plan(2);
 
@@ -69,4 +68,17 @@ test('statOne w/ empty array', function (t) {
     });
 
     scan.stat([]);
+});
+
+test('insufficient priveleges', function (t) {
+    t.plan(2);
+
+    var scan = new Scan();
+
+    scan.on('error', function (err, pathname, stat) {
+        t.ok(~['ENOENT', 'EACCES'].indexOf(err.code));
+        t.same(undefined, stat);
+    });
+
+    scan.relatively(['/.Trashes', '/root']);
 });
