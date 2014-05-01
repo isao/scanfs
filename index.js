@@ -2,7 +2,7 @@
 
 var fs = require('fs'),
     path = require('path'),
-    EventEmitter = require('events').EventEmitter;
+    EventEmitterPrototype = require('events').EventEmitter.prototype;
 
 
 // helper functions //
@@ -57,7 +57,15 @@ function Scan(ignore, typer) {
     }
 }
 
-Scan.prototype = Object.create(EventEmitter.prototype);
+Scan.prototype = Object.create(EventEmitterPrototype, {
+    constructor: {
+        value: Scan,
+        enumerable: false,
+        writable: true,
+        configurable: true
+    }
+});
+
 
 /**
  * @param {array} queue Pathname(s) to scan.
