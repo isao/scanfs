@@ -1,6 +1,6 @@
 {
   "name": "scanfs",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A small library that does a breadth-first walk of the file system, and emits (customizable) events on the way.",
   "main": "index.js",
   "dependencies": {},
