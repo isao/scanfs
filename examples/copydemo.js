@@ -17,7 +17,7 @@ scan.on('dir', function (err, pathname, stat) {
 });
 
 scan.on('file', function (err, pathname, stat) {
-    var dest = to + pathname;
+    var dest = path.join(to, pathname);
     if (pathname.match(/\.js$/)) {
         console.log('copying %s to %s', pathname, dest);
         fs.createReadStream(pathname).pipe(fs.createWriteStream(dest));

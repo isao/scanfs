@@ -11,7 +11,7 @@ install
 example
 -------
 
-A example showing syntax (callback and handler functions not shown):
+A example showing syntax (helper functions not shown):
 
     // instantiate with ignore patterns and a custom event function
     var Scanfs = require('scanfs'),
@@ -25,7 +25,7 @@ A example showing syntax (callback and handler functions not shown):
     // begin scan, convert emitted pathnames to absolute
     scan.absolutely([pathA, pathB]);
 
-A functional example including handlers. This 1) outputs the file size of all JSON files, 2) outputs the modification dates of every directory, and 3) ignores 'node_modules', and '.git' directories. Note the `new` operator is optional, and is not used here.
+A contrived but functional example including helper functions. This 1) outputs the file size of all JSON files, 2) outputs the modification dates of every directory, and 3) ignores 'node_modules', and '.git' directories. Note the `new` operator is optional, and is not used in this example.
 
     var Scanfs = require('scanfs');
 
