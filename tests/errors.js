@@ -70,18 +70,15 @@ test('statOne w/ empty array', function (t) {
     scan.stat([]);
 });
 
-test('insufficient priveleges emits error event', function (t) {
-    t.plan(3);
+test('insufficient priveleges', function (t) {
+    t.plan(4);
 
     var scan = new Scan();
 
     scan.on('error', function (err, pathname, stat) {
+        t.ok(~['ENOENT', 'EACCES'].indexOf(err.code));
         t.same(undefined, stat);
-        if ('EACCES' === err.code) {
-            // ONE of the dirs will exist and trigger this
-            t.same('EACCES', err.code);
-        }
     });
 
-    scan.relatively(['/root' /*linux*/, '/.Trashes' /*osx*/]);
+    scan.relatively(['/root', '/.Trashes'].reverse());
 });
